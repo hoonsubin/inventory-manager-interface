@@ -1,6 +1,7 @@
 import ProductListItem from '../components/ProductListItem';
 import { useState } from 'react';
-import { Message, getMessages } from '../data/products';
+import { getMessages } from '../data/products';
+import { Message } from "../types";
 import {
   IonContent,
   IonHeader,
@@ -58,17 +59,17 @@ const InventoryPage: React.FC = () => {
         </IonList>
 
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton>
+          <IonFabButton onClick={() => window.alert("Adding a new product")}>
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
-          <IonFabList side="top">
-            <IonFabButton>
+          {/* <IonFabList side="top">
+            <IonFabButton onClick={() => window.alert("hello world")}>
               <IonIcon icon={colorPalette}></IonIcon>
             </IonFabButton>
             <IonFabButton>
               <IonIcon icon={globe}></IonIcon>
             </IonFabButton>
-          </IonFabList>
+          </IonFabList> */}
         </IonFab>
 
       </IonContent>

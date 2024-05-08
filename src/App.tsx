@@ -17,7 +17,7 @@ import {
 } from "ionicons/icons";
 import InventoryPage from "./pages/InventoryPage";
 import HistoryPage from "./pages/HistoryPage";
-import SalesPage from "./pages/SalesPage";
+import ValuationPage from "./pages/ValuationPage";
 import ViewProduct from "./pages/ViewProduct";
 
 /* Core CSS required for Ionic components to work properly */
@@ -63,8 +63,8 @@ const App: React.FC = () => (
           <Route exact path="/history">
             <HistoryPage />
           </Route>
-          <Route path="/sales">
-            <SalesPage />
+          <Route path="/valuation">
+            <ValuationPage />
           </Route>
           <Route exact path="/">
             <Redirect to="/inventory" />
@@ -82,9 +82,9 @@ const App: React.FC = () => (
             <IonIcon aria-hidden="true" icon={timeOutline} />
             <IonLabel>Transaction History</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="sales" href="/sales">
+          <IonTabButton tab="valuation" href="/valuation">
             <IonIcon aria-hidden="true" icon={cashOutline} />
-            <IonLabel>Sales</IonLabel>
+            <IonLabel>Valuation</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>

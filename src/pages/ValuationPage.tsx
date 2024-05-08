@@ -1,25 +1,25 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
-import './SalesPage.css';
+import './ValuationPage.css';
 
-const SalesPage: React.FC = () => {
+const ValuationPage: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Sales</IonTitle>
+          <IonTitle>Valuation</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Sales</IonTitle>
+            <IonTitle size="large">Inventory Valuation</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Sales page" />
+        <ExploreContainer name="Valuation page" />
       </IonContent>
     </IonPage>
   );
 };
 
-export default SalesPage;
+export default ValuationPage;

@@ -1,9 +1,4 @@
-export interface Message {
-  fromName: string;
-  subject: string;
-  date: string;
-  id: number;
-}
+import { Message } from "../types";
 
 const messages: Message[] = [
   {

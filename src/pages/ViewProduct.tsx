@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Message, getMessage } from '../data/products';
+import { getMessage } from '../data/products';
+import { Message } from "../types";
 import {
   IonBackButton,
   IonButtons,
@@ -27,7 +28,7 @@ const ViewProduct: React.FC = () => {
   });
 
   return (
-    <IonPage id="view-message-page">
+    <IonPage id="view-product-page">
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
