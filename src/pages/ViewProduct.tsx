@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { getMessage } from '../data/products';
-import { Message } from "../types";
+import { getProduct } from '../data/products';
+import { Product, UUID } from "../types";
 import {
   IonBackButton,
   IonButtons,
@@ -19,12 +19,13 @@ import { useParams } from 'react-router';
 import './ViewProduct.css';
 
 const ViewProduct: React.FC = () => {
-  const [message, setMessage] = useState<Message>();
-  const params = useParams<{ id: string }>();
+  const [product, setProduct] = useState<Product>();
+
+  const params = useParams<{ id: UUID }>();
 
   useIonViewWillEnter(() => {
-    const msg = getMessage(parseInt(params.id, 10));
-    setMessage(msg);
+    const prod = getProduct(params.id)
+    setProduct(prod);
   });
 
   return (
@@ -32,21 +33,21 @@ const ViewProduct: React.FC = () => {
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton text="Inbox" defaultHref="/home"></IonBackButton>
+            <IonBackButton text="Inventory" defaultHref="/inventory"></IonBackButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
 
       <IonContent fullscreen>
-        {message ? (
+        {product ? (
           <>
             <IonItem>
               <IonIcon aria-hidden="true" icon={personCircle} color="primary"></IonIcon>
               <IonLabel className="ion-text-wrap">
                 <h2>
-                  {message.fromName}
+                  {product.name}
                   <span className="date">
-                    <IonNote>{message.date}</IonNote>
+                    <IonNote>{product.price}</IonNote>
                   </span>
                 </h2>
                 <h3>
@@ -56,7 +57,7 @@ const ViewProduct: React.FC = () => {
             </IonItem>
 
             <div className="ion-padding">
-              <h1>{message.subject}</h1>
+              <h1>{product.name}</h1>
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
@@ -69,7 +70,7 @@ const ViewProduct: React.FC = () => {
             </div>
           </>
         ) : (
-          <div>Message not found</div>
+          <div>Product not found</div>
         )}
       </IonContent>
     </IonPage>

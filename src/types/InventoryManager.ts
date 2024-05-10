@@ -1,6 +1,6 @@
-import { Product, Transaction } from "./index";
+import { Product, Transaction, UUID, IInventory } from ".";
 
-export class InventoryManager {
+export class InventoryManager implements IInventory {
   constructor(products: Product[], transactionHistory: Transaction[]) {
     this._products = products;
     this._transactionHistory = transactionHistory;
@@ -9,7 +9,7 @@ export class InventoryManager {
   private _products: Product[];
   private _transactionHistory: Transaction[];
 
-  public get product(): Product[] {
+  public get products(): Product[] {
     return this._products;
   }
 
@@ -17,12 +17,37 @@ export class InventoryManager {
     return this._transactionHistory;
   }
 
-  public saveData() {
-    // todo: implement data save feature so that we have persistent data
+  public get totalCosts() {
+    // todo: calculate the total cost based on the transaction history
+    const purchaseTx = this._transactionHistory.filter(
+      (i) => i.type === "buy" || i.type === "add"
+    );
+    if (!purchaseTx) {
+      return 0;
+    }
+    return purchaseTx.reduce((acc, i) => acc + i.totalCost, 0);
   }
 
-  public loadData() {
-    // todo: implement load data feature to read from a locally stored JSON file
+  public get totalValue() {
+    // todo: calculate the total value of the current inventory by adding all items and stocks
+
+    return this._products.reduce((acc, i) => acc + i.price, 0);
+  }
+
+  public get totalRevenue() {
+    // todo: calculate the total revenue by adding all the sales from the transaction history
+    const purchaseTx = this._transactionHistory.filter(
+      (i) => i.type === "sell"
+    );
+    if (!purchaseTx) {
+      return 0;
+    }
+    return purchaseTx.reduce((acc, i) => acc + i.totalCost, 0);
+  }
+
+  public get totalProfit() {
+    // todo: calculate the total profit by subtracting the total cost from the revenue based on the transaction history
+    return this.totalRevenue - this.totalCosts;
   }
 
   public addNewProduct(
@@ -38,10 +63,22 @@ export class InventoryManager {
       throw new Error("Please provide the product name");
     }
 
-    // todo: add transaction history
+    // instead of incrementing the id value, we use a stronger random UUID generator function
+    const prodId = crypto.randomUUID();
+
+    const totalCost = cost * initStock;
+
+    this._newTransaction({
+      id: crypto.randomUUID(),
+      type: "add",
+      totalCost,
+      productId: prodId,
+      quantity: initStock,
+      time: new Date(),
+    });
 
     this._products.push({
-      id: 0, // need to make it increment
+      id: prodId,
       name: name,
       price: retailPrice,
       cost: cost,
@@ -49,30 +86,57 @@ export class InventoryManager {
     });
   }
 
-  public removeProduct(productId: number) {
+  public removeProduct(productId: UUID, isSelling: boolean = false) {
     const productIndexToRemove = this._products.findIndex(
       (i) => i.id === productId
     );
     if (productIndexToRemove === -1) {
       throw new Error(`Cannot find product with ID ${productId}`);
     }
+
+    // sell all stock and remove the product from the inventory
+    if (isSelling) {
+      // todo: instead of simply removing the product, we will also mark it as a sale
+    }
+
+    const selectedProduct = this._products[productIndexToRemove];
     // todo: add new transaction history
+    this._newTransaction({
+      id: crypto.randomUUID(),
+      type: isSelling ? "sell" : "remove",
+      totalCost: isSelling ? selectedProduct.price * selectedProduct.stock : 0,
+      productId: selectedProduct.id,
+      quantity: selectedProduct.stock,
+      time: new Date(),
+    });
+
+    // remove the product from the inventory list
     this._products.splice(productIndexToRemove, 1);
   }
 
-  public buyProductStock(productId: number, stock: number) {
+  public buyProductStock(productId: UUID, stock: number) {
     if (stock < 1) {
       throw new Error("New product stock cannot be below 1");
     }
     const selectedProduct = this._findProdById(productId);
     // todo: add a new transaction history
+    this._newTransaction({
+      id: crypto.randomUUID(),
+      type: "buy",
+      totalCost: selectedProduct.cost * stock,
+      productId: selectedProduct.id,
+      quantity: stock,
+      time: new Date(),
+    });
+
     selectedProduct.stock += stock;
   }
 
-  public sellProductStock(productId: number, stock: number) {
+  public sellProductStock(productId: UUID, stock: number) {
     if (stock < 1) {
       throw new Error("Cannot sell product with a negative number");
     }
+
     const selectedProduct = this._findProdById(productId);
     if (selectedProduct.stock < stock) {
       throw new Error(
@@ -81,18 +145,27 @@ export class InventoryManager {
     }
 
     // todo: add a new transaction history
+    this._newTransaction({
+      id: crypto.randomUUID(),
+      productId: selectedProduct.id,
+      time: new Date(),
+      type: "sell",
+      totalCost: selectedProduct.cost * stock,
+      quantity: stock,
+    });
+
     selectedProduct.stock -= stock;
   }
 
   /**
    * Add a new transaction to the history
-   * @param args the transaction data
+   * @param tx the transaction data
    */
-  private _newTransaction(args: Transaction) {
-    this._transactionHistory.push(args);
+  private _newTransaction(tx: Transaction) {
+    this._transactionHistory.push(tx);
   }
 
-  private _findProdById(productId: number) {
+  private _findProdById(productId: UUID) {
     const selectedProduct = this._products.find((i) => i.id === productId);
     if (!selectedProduct) {
       throw new Error(`Product with ID ${productId} does not exist`);

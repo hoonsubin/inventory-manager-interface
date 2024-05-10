@@ -13,44 +13,36 @@ import { addCircle, cash, trash } from "ionicons/icons";
 import "./ProductListItem.css";
 
 interface ProductListItemProps {
-  message: Message;
+  product: Product;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({ message }) => {
+const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
   return (
     <IonItemSliding>
-      <IonItem routerLink={`/product/${message.id}`} detail={true}>
+      <IonItem routerLink={`/product/${product.id}`} detail={true}>
         <div slot="start" className="dot dot-unread"></div>
         <IonLabel className="ion-text-wrap">
           <h2>
-            {message.fromName}
+            {product.name}
             <span className="date">
-              <IonNote>{message.date}</IonNote>
+              <IonNote>{new Date().toDateString()}</IonNote>
             </span>
           </h2>
-          <h3>{message.subject}</h3>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </p>
+          <h3>Retail Price: {product.price} EUR</h3>
+          <h3>Cost to Purchase: {product.cost} EUR</h3>
         </IonLabel>
         {/* options are: add stock, sell stock, and remove product */}
         <IonButton
           slot="end"
           color="primary"
-          onClick={() => window.alert(`Restocking "${message.subject}"`)}
+          onClick={() => window.alert(`Restocking "${product.name}"`)}
         >
           <IonIcon slot="icon-only" icon={addCircle}></IonIcon>
         </IonButton>
         <IonButton
           slot="end"
           color="secondary"
-          onClick={() => window.alert(`Selling "${message.subject}"`)}
+          onClick={() => window.alert(`Selling "${product.name}"`)}
         >
           <IonIcon slot="icon-only" icon={cash}></IonIcon>
         </IonButton>
@@ -61,7 +53,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ message }) => {
           expandable={true}
           onClick={() =>
             window.alert(
-              `Are you sure you want to remove "${message.subject}"?`
+              `Are you sure you want to remove "${product.name}"?`
             )
           }
         >

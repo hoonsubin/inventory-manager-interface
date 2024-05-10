@@ -1,7 +1,7 @@
 import ProductListItem from '../components/ProductListItem';
 import { useState } from 'react';
-import { getMessages } from '../data/products';
-import { Message } from "../types";
+import { getMessages, getProducts } from '../data/products';
+import { Message, Product } from "../types";
 import {
   IonContent,
   IonHeader,
@@ -14,18 +14,21 @@ import {
   useIonViewWillEnter,
   IonIcon,
   IonFab,
-  IonFabButton,
-  IonFabList
+  IonFabButton
 } from '@ionic/react';
-import { add, colorPalette, globe } from "ionicons/icons";
+import { add } from "ionicons/icons";
 import './InventoryPage.css';
 
 const InventoryPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useIonViewWillEnter(() => {
     const msgs = getMessages();
     setMessages(msgs);
+
+    const prods = getProducts();
+    setProducts(prods);
   });
 
   const refresh = (e: CustomEvent) => {
@@ -55,7 +58,7 @@ const InventoryPage: React.FC = () => {
         </IonHeader>
 
         <IonList>
-          {messages.map(m => <ProductListItem key={m.id} message={m} />)}
+          {products.map(p => <ProductListItem key={p.id} product={p} />)}
         </IonList>
 
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
