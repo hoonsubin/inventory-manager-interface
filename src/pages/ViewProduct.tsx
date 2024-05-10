@@ -46,12 +46,15 @@ const ViewProduct: React.FC = () => {
               <IonLabel className="ion-text-wrap">
                 <h2>
                   {product.name}
-                  <span className="date">
+                  <span className="price">
                     <IonNote>{product.price}</IonNote>
                   </span>
                 </h2>
                 <h3>
-                  To: <IonNote>Me</IonNote>
+                  Price: <IonNote>{product.price}</IonNote>
+                </h3>
+                <h3>
+                  Cost: <IonNote>{product.cost}</IonNote>
                 </h3>
               </IonLabel>
             </IonItem>

@@ -1,14 +1,14 @@
-#view-message-page ion-item {
+#view-product-page ion-item {
   --inner-padding-end: 0;
   --background: transparent;
 }
 
-#view-message-page ion-label {
+#view-product-page ion-label {
   margin-top: 12px;
   margin-bottom: 12px;
 }
 
-#view-message-page ion-item h2 {
+#view-product-page ion-item h2 {
   font-weight: 600;
   
   /**
@@ -23,28 +23,28 @@
   justify-content: space-between;
 }
 
-#view-message-page ion-item .date {
+#view-product-page ion-item .price {
   align-items: center;
   display: flex;
 }
 
-#view-message-page ion-item ion-icon {
+#view-product-page ion-item ion-icon {
   font-size: 42px;
   margin-right: 8px;
 }
 
-#view-message-page ion-item ion-note {
+#view-product-page ion-item ion-note {
   font-size: 0.9375rem;
   margin-right: 12px;
   font-weight: normal;
 }
 
-#view-message-page h1 {
+#view-product-page h1 {
   margin: 0;
   font-weight: bold;
   font-size: 1.4rem;
 }
 
-#view-message-page p {
+#view-product-page p {
   line-height: 1.4;
 }

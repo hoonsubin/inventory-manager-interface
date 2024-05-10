@@ -1,7 +1,7 @@
 import ProductListItem from '../components/ProductListItem';
 import { useState } from 'react';
-import { getMessages, getProducts } from '../data/products';
-import { Message, Product } from "../types";
+import { getProducts } from '../data/products';
+import { Product } from "../types";
 import {
   IonContent,
   IonHeader,
@@ -20,13 +20,9 @@ import { add } from "ionicons/icons";
 import './InventoryPage.css';
 
 const InventoryPage: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
 
   useIonViewWillEnter(() => {
-    const msgs = getMessages();
-    setMessages(msgs);
-
     const prods = getProducts();
     setProducts(prods);
   });
