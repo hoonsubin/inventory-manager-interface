@@ -1,10 +1,10 @@
 import ProductListItem from "../components/ProductListItem";
+import AddProductModal from "../components/AddNewProdModal";
 import React, { useState, useContext } from "react";
 import { Product } from "../types";
 import {
   IonContent,
   IonHeader,
-  IonList,
   IonPage,
   IonRefresher,
   IonRefresherContent,
@@ -24,6 +24,7 @@ import "./InventoryPage.css";
 const InventoryPage: React.FC = () => {
   const inventoryContext = useContext(InventoryContext);
   const [products, setProducts] = useState<Product[]>([]);
+  const [showAddProdModal, setShowAddProdModal] = useState(false);
 
   if (!inventoryContext) {
     throw new Error(
@@ -48,7 +49,7 @@ const InventoryPage: React.FC = () => {
     <IonPage id="home-page">
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Inventory</IonTitle>
+          <IonTitle>Current Inventory</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -71,10 +72,30 @@ const InventoryPage: React.FC = () => {
         </IonGrid>
 
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton onClick={() => window.alert("Adding a new product")}>
+          <IonFabButton onClick={() => setShowAddProdModal(true)}>
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonFab>
+        <AddProductModal
+          isOpen={showAddProdModal}
+          onClose={() => setShowAddProdModal(false)}
+          onAddNewProduct={(
+            name: string,
+            cost: number,
+            price: number,
+            stock: number,
+            description: string
+          ) => {
+            // error: this is not getting called properly
+            inventoryContext.addNewProduct(
+              name,
+              price,
+              cost,
+              stock,
+              description
+            );
+          }}
+        />
       </IonContent>
     </IonPage>
   );

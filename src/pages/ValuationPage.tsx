@@ -28,7 +28,7 @@ const ValuationPage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Valuation</IonTitle>
+          <IonTitle>Inventory Valuation</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>

@@ -55,7 +55,7 @@ export class InventoryManager implements IInventory {
     retailPrice: number,
     cost: number,
     initStock: number,
-    description: string,
+    description: string
   ) {
     if (retailPrice < 0.01 || cost < 0.01 || initStock < 0) {
       throw new Error("Any of the numeric values cannot be below 0");
@@ -86,6 +86,9 @@ export class InventoryManager implements IInventory {
       stock: initStock,
       description,
     });
+    console.log(
+      `Adding new product called ${name} with the price ${retailPrice} and store ${initStock} of it`
+    );
   }
 
   public removeProduct(productId: UUID, isSelling: boolean = false) {
@@ -96,12 +99,15 @@ export class InventoryManager implements IInventory {
       throw new Error(`Cannot find product with ID ${productId}`);
     }
 
+    const selectedProduct = this._products[productIndexToRemove];
     // sell all stock and remove the product from the inventory
     if (isSelling) {
       // todo: instead of simply removing the product, we will also mark it as a sale
+      console.log(
+        `Selling the entire stock of ${selectedProduct.name} from the inventory`
+      );
     }
 
-    const selectedProduct = this._products[productIndexToRemove];
     // todo: add new transaction history
     this._newTransaction({
       id: crypto.randomUUID(),
@@ -114,6 +120,7 @@ export class InventoryManager implements IInventory {
 
     // remove the product from the inventory list
     this._products.splice(productIndexToRemove, 1);
+    console.log(`Removing product ${selectedProduct.name} from the inventory`);
   }
 
   public buyProductStock(productId: UUID, stock: number) {
@@ -132,6 +139,7 @@ export class InventoryManager implements IInventory {
     });
 
     selectedProduct.stock += stock;
+    console.log(`Bought ${stock} more of ${selectedProduct.name}`);
   }
 
   public sellProductStock(productId: UUID, stock: number) {
