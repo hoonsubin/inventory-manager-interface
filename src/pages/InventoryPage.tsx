@@ -1,6 +1,6 @@
 import ProductListItem from "../components/ProductListItem";
 import AddProductModal from "../components/AddNewProdModal";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Product } from "../types";
 import {
   IonContent,
@@ -32,10 +32,14 @@ const InventoryPage: React.FC = () => {
     );
   }
 
-  useIonViewWillEnter(() => {
-    const prods = inventoryContext.products;
-    setProducts(prods);
-  });
+  // useIonViewWillEnter(() => {
+  //   const prods = inventoryContext.products;
+  //   setProducts(prods);
+  // });
+
+  useEffect(() => {
+    setProducts(inventoryContext.products)
+  }, [inventoryContext.products])
 
   const refresh = (e: CustomEvent) => {
     setTimeout(() => {
