@@ -22,7 +22,7 @@ export class InventoryManager implements IInventory {
     const purchaseTx = this._transactionHistory.filter(
       (i) => i.type === "buy" || i.type === "add"
     );
-    if (!purchaseTx) {
+    if (purchaseTx.length < 1) {
       return 0;
     }
     return purchaseTx.reduce((acc, i) => acc + i.totalCost, 0);
@@ -39,7 +39,7 @@ export class InventoryManager implements IInventory {
     const purchaseTx = this._transactionHistory.filter(
       (i) => i.type === "sell"
     );
-    if (!purchaseTx) {
+    if (purchaseTx.length < 1) {
       return 0;
     }
     return purchaseTx.reduce((acc, i) => acc + i.totalCost, 0);

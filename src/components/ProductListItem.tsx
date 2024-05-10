@@ -31,6 +31,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
           </h2>
           <h3>Retail Price: {product.price} EUR</h3>
           <h3>Cost to Purchase: {product.cost} EUR</h3>
+          <h3>Remaining Stock: {product.stock}</h3>
         </IonLabel>
         {/* options are: add stock, sell stock, and remove product */}
         <IonButton

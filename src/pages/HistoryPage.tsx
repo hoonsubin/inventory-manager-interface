@@ -4,12 +4,29 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonViewWillEnter
 } from "@ionic/react";
+import React, { useContext, useState } from "react";
+import { Transaction } from "../types";
+import { InventoryContext } from "../context/InventoryContext";
 import ExploreContainer from "../components/ExploreContainer";
 
 import "./HistoryPage.css";
 
 const HistoryPage: React.FC = () => {
+  const inventoryContext = useContext(InventoryContext);
+  const [txHistory, setTxHistory] = useState<Transaction[]>([]);
+  if (!inventoryContext) {
+    throw new Error(
+      "Inventory context failed to load. The application cannot work."
+    );
+  }
+
+  useIonViewWillEnter(() => {
+    const hist = inventoryContext.transactionHistory;
+    setTxHistory(hist);
+  });
+
   return (
     <IonPage>
       <IonHeader>
@@ -23,7 +40,8 @@ const HistoryPage: React.FC = () => {
             <IonTitle size="large">Transaction History</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Transaction History page" />
+        {txHistory.length > 0 ? (<>There is a history!</>) : (<ExploreContainer name="Transaction History not found" />)}
+        
       </IonContent>
     </IonPage>
   );

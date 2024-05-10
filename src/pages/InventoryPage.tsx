@@ -1,6 +1,5 @@
-import ProductListItem from '../components/ProductListItem';
-import { useState } from 'react';
-import { getProducts } from '../data/products';
+import ProductListItem from "../components/ProductListItem";
+import React, { useState, useContext } from "react";
 import { Product } from "../types";
 import {
   IonContent,
@@ -14,16 +13,24 @@ import {
   useIonViewWillEnter,
   IonIcon,
   IonFab,
-  IonFabButton
-} from '@ionic/react';
+  IonFabButton,
+} from "@ionic/react";
 import { add } from "ionicons/icons";
-import './InventoryPage.css';
+import { InventoryContext } from "../context/InventoryContext";
+import "./InventoryPage.css";
 
 const InventoryPage: React.FC = () => {
+  const inventoryContext = useContext(InventoryContext);
   const [products, setProducts] = useState<Product[]>([]);
 
+  if (!inventoryContext) {
+    throw new Error(
+      "Inventory context failed to load. The application cannot work."
+    );
+  }
+
   useIonViewWillEnter(() => {
-    const prods = getProducts();
+    const prods = inventoryContext.products;
     setProducts(prods);
   });
 
@@ -47,14 +54,14 @@ const InventoryPage: React.FC = () => {
 
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">
-            Inventory
-            </IonTitle>
+            <IonTitle size="large">Inventory</IonTitle>
           </IonToolbar>
         </IonHeader>
 
         <IonList>
-          {products.map(p => <ProductListItem key={p.id} product={p} />)}
+          {products.map((p) => (
+            <ProductListItem key={p.id} product={p} />
+          ))}
         </IonList>
 
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
@@ -62,7 +69,6 @@ const InventoryPage: React.FC = () => {
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonFab>
-
       </IonContent>
     </IonPage>
   );

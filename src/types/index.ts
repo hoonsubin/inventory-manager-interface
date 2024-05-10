@@ -1,10 +1,3 @@
-export type Message = {
-  fromName: string;
-  subject: string;
-  date: string;
-  id: number;
-}
-
 export type UUID = `${string}-${string}-${string}-${string}-${string}`;
 
 export interface IInventory {

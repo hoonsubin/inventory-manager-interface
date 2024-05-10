@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { getProduct } from '../data/products';
+import { useState } from "react";
+import { getProduct } from "../data/products";
 import { Product, UUID } from "../types";
 import {
   IonBackButton,
@@ -13,10 +13,10 @@ import {
   IonPage,
   IonToolbar,
   useIonViewWillEnter,
-} from '@ionic/react';
-import { personCircle } from 'ionicons/icons';
-import { useParams } from 'react-router';
-import './ViewProduct.css';
+} from "@ionic/react";
+import { personCircle } from "ionicons/icons";
+import { useParams } from "react-router";
+import "./ViewProduct.css";
 
 const ViewProduct: React.FC = () => {
   const [product, setProduct] = useState<Product>();
@@ -24,7 +24,7 @@ const ViewProduct: React.FC = () => {
   const params = useParams<{ id: UUID }>();
 
   useIonViewWillEnter(() => {
-    const prod = getProduct(params.id)
+    const prod = getProduct(params.id);
     setProduct(prod);
   });
 
@@ -33,7 +33,10 @@ const ViewProduct: React.FC = () => {
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton text="Inventory" defaultHref="/inventory"></IonBackButton>
+            <IonBackButton
+              text="Inventory"
+              defaultHref="/inventory"
+            ></IonBackButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
@@ -42,12 +45,18 @@ const ViewProduct: React.FC = () => {
         {product ? (
           <>
             <IonItem>
-              <IonIcon aria-hidden="true" icon={personCircle} color="primary"></IonIcon>
+              <IonIcon
+                aria-hidden="true"
+                icon={personCircle}
+                color="primary"
+              ></IonIcon>
               <IonLabel className="ion-text-wrap">
                 <h2>
                   {product.name}
                   <span className="last-tx">
-                    <IonNote>Last Transaction {new Date().toDateString()}</IonNote>
+                    <IonNote>
+                      Last Transaction {new Date().toDateString()}
+                    </IonNote>
                   </span>
                 </h2>
                 <h3>
@@ -78,6 +87,6 @@ const ViewProduct: React.FC = () => {
       </IonContent>
     </IonPage>
   );
-}
+};
 
 export default ViewProduct;
