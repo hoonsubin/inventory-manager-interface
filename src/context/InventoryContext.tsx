@@ -1,4 +1,4 @@
-import { IInventory, UUID, Transaction, InventoryManager } from "../types";
+import { IInventory, UUID, Transaction, InventoryManager, Product } from "../types";
 import React, {
   useState,
   ReactNode,
@@ -6,13 +6,13 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import { getProducts } from "../data/products";
+import { getDefaultProducts } from "../data/products";
 
 // extend from the inventory interface so that it matches the main class while allowing us to extend UI-specific functions
 interface InventoryContextType extends IInventory {
   getLastTxOfProd: (prodId: UUID) => Transaction;
   getAllTxOfProd: (prodId: UUID) => Transaction[];
-  saveData: () => void;
+  saveData: (productList: Product[], txList: Transaction[]) => void;
   loadData: () => void;
 }
 
@@ -34,7 +34,7 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
       const savedTransactions = localStorage.getItem("transactions");
       return new InventoryManager(
         // either load from the local storage, or get the default items
-        savedInventory ? JSON.parse(savedInventory) : getProducts(),
+        savedInventory ? JSON.parse(savedInventory) : getDefaultProducts(),
         savedTransactions ? JSON.parse(savedTransactions) : []
       );
     }
@@ -70,14 +70,14 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
     [transactionHistory]
   );
 
-  const saveData = () => {
+  const saveData = (productList: Product[], txList: Transaction[]) => {
     localStorage.setItem(
       "inventory",
-      JSON.stringify(inventoryManager.products)
+      JSON.stringify(productList)
     );
     localStorage.setItem(
       "transactions",
-      JSON.stringify(inventoryManager.transactionHistory)
+      JSON.stringify(txList)
     );
   };
 
@@ -86,7 +86,7 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
     const savedTransactions = localStorage.getItem("transactions");
     setInventoryManager(
       new InventoryManager(
-        savedInventory ? JSON.parse(savedInventory) : getProducts(),
+        savedInventory ? JSON.parse(savedInventory) : getDefaultProducts(),
         savedTransactions ? JSON.parse(savedTransactions) : []
       )
     );
@@ -99,8 +99,8 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
 
   // Effect to save data whenever it changes
   useEffect(() => {
-    saveData();
-  }, [inventoryManager]);
+    saveData(inventoryManager.products, inventoryManager.transactionHistory);
+  }, [inventoryManager.transactionHistory, inventoryManager.products]);
 
   const contextValue: InventoryContextType = {
     products,
@@ -114,9 +114,10 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
       name: string,
       retailPrice: number,
       cost: number,
-      initStock: number
+      initStock: number,
+      description: string,
     ) => {
-      inventoryManager.addNewProduct(name, retailPrice, cost, initStock);
+      inventoryManager.addNewProduct(name, retailPrice, cost, initStock, description);
     },
     removeProduct: (productId: UUID, isSelling: boolean = false) => {
       inventoryManager.removeProduct(productId, isSelling);
@@ -126,6 +127,9 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
     },
     sellProductStock: (productId: UUID, stock: number) => {
       inventoryManager.sellProductStock(productId, stock);
+    },
+    findProdById: (productId: UUID) => {
+      return inventoryManager.findProdById(productId);
     },
 
     saveData,

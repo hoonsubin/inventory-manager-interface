@@ -54,7 +54,8 @@ export class InventoryManager implements IInventory {
     name: string,
     retailPrice: number,
     cost: number,
-    initStock: number
+    initStock: number,
+    description: string,
   ) {
     if (retailPrice < 0.01 || cost < 0.01 || initStock < 0) {
       throw new Error("Any of the numeric values cannot be below 0");
@@ -83,6 +84,7 @@ export class InventoryManager implements IInventory {
       price: retailPrice,
       cost: cost,
       stock: initStock,
+      description,
     });
   }
 
@@ -118,7 +120,7 @@ export class InventoryManager implements IInventory {
     if (stock < 1) {
       throw new Error("New product stock cannot be below 1");
     }
-    const selectedProduct = this._findProdById(productId);
+    const selectedProduct = this.findProdById(productId);
     // todo: add a new transaction history
     this._newTransaction({
       id: crypto.randomUUID(),
@@ -137,7 +139,7 @@ export class InventoryManager implements IInventory {
       throw new Error("Cannot sell product with a negative number");
     }
 
-    const selectedProduct = this._findProdById(productId);
+    const selectedProduct = this.findProdById(productId);
     if (selectedProduct.stock < stock) {
       throw new Error(
         `Product ID ${productId} has only have ${selectedProduct.stock} items left, while you're trying to sell ${stock} items`
@@ -165,7 +167,7 @@ export class InventoryManager implements IInventory {
     this._transactionHistory.push(tx);
   }
 
-  private _findProdById(productId: UUID) {
+  public findProdById(productId: UUID) {
     const selectedProduct = this._products.find((i) => i.id === productId);
     if (!selectedProduct) {
       throw new Error(`Product with ID ${productId} does not exist`);

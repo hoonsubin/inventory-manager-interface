@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { getProduct } from "../data/products";
+import { useState, useContext } from "react";
+import { InventoryContext } from "../context/InventoryContext";
 import { Product, UUID } from "../types";
 import {
   IonBackButton,
@@ -16,15 +16,25 @@ import {
 } from "@ionic/react";
 import { personCircle } from "ionicons/icons";
 import { useParams } from "react-router";
+import ExploreContainer from "../components/ExploreContainer";
 import "./ViewProduct.css";
 
 const ViewProduct: React.FC = () => {
   const [product, setProduct] = useState<Product>();
+  const inventoryContext = useContext(InventoryContext);
+
+  if (!inventoryContext) {
+    throw new Error(
+      "Inventory context failed to load. The application cannot work."
+    );
+  }
 
   const params = useParams<{ id: UUID }>();
 
   useIonViewWillEnter(() => {
-    const prod = getProduct(params.id);
+    // todo: this will always load the default data, we need to make sure that it uses the latest data from the manager
+    const prod = inventoryContext.findProdById(params.id);
+
     setProduct(prod);
   });
 
@@ -71,18 +81,14 @@ const ViewProduct: React.FC = () => {
             <div className="ion-padding">
               <h1>{product.name}</h1>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
+                {product.description
+                  ? product.description
+                  : "No product description"}
               </p>
             </div>
           </>
         ) : (
-          <div>Product not found</div>
+          <ExploreContainer name="Product Not Found" />
         )}
       </IonContent>
     </IonPage>

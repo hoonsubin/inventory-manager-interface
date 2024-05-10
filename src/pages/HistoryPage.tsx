@@ -40,7 +40,7 @@ const HistoryPage: React.FC = () => {
             <IonTitle size="large">Transaction History</IonTitle>
           </IonToolbar>
         </IonHeader>
-        {txHistory.length > 0 ? (<>There is a history!</>) : (<ExploreContainer name="Transaction History not found" />)}
+        {txHistory.length > 0 ? (<>There is a history!</>) : (<ExploreContainer name="Transaction History Not Found" />)}
         
       </IonContent>
     </IonPage>

@@ -12,11 +12,13 @@ export interface IInventory {
     name: string,
     retailPrice: number,
     cost: number,
-    initStock: number
+    initStock: number,
+    description: string,
   ) => void;
   removeProduct: (productId: UUID, isSelling: boolean) => void;
   buyProductStock: (productId: UUID, stock: number) => void;
   sellProductStock: (productId: UUID, stock: number) => void;
+  findProdById: (productId: UUID) => Product;
 }
 
 export type Product = {
@@ -30,6 +32,8 @@ export type Product = {
   price: number;
   // current number of stocks of a given product
   stock: number;
+  // the product description
+  description?: string;
 }
 
 export type Transaction = {

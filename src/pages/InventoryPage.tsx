@@ -40,6 +40,8 @@ const InventoryPage: React.FC = () => {
     }, 3000);
   };
 
+  // todo: refactor this so that this UI uses a grid of cards with buttons.
+  // Clicking on the card should go to the details page which will also show the same thing but with more information.
   return (
     <IonPage id="home-page">
       <IonHeader>
