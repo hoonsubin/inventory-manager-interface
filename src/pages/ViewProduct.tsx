@@ -14,7 +14,7 @@ import {
   IonToolbar,
   useIonViewWillEnter,
 } from "@ionic/react";
-import { personCircle } from "ionicons/icons";
+import { bag } from "ionicons/icons";
 import { useParams } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
 import "./ViewProduct.css";
@@ -57,7 +57,7 @@ const ViewProduct: React.FC = () => {
             <IonItem>
               <IonIcon
                 aria-hidden="true"
-                icon={personCircle}
+                icon={bag}
                 color="primary"
               ></IonIcon>
               <IonLabel className="ion-text-wrap">
@@ -70,10 +70,10 @@ const ViewProduct: React.FC = () => {
                   </span>
                 </h2>
                 <h3>
-                  Price: <IonNote>{product.price} EUR</IonNote>
+                  Price: <IonNote>{product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })} EUR</IonNote>
                 </h3>
                 <h3>
-                  Cost: <IonNote>{product.cost} EUR</IonNote>
+                  Cost: <IonNote>{product.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })} EUR</IonNote>
                 </h3>
               </IonLabel>
             </IonItem>

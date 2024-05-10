@@ -6,6 +6,7 @@ import {
   IonInput,
   IonItem,
   IonLabel,
+  IonTextarea,
 } from "@ionic/react";
 
 interface AddProductModalProps {
@@ -48,40 +49,49 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
     <IonModal isOpen={isOpen} onDidDismiss={onClose}>
       <IonContent className="ion-padding">
         <IonItem>
-          <IonLabel position="stacked">Product Name</IonLabel>
           <IonInput
+            label="Product Name"
+            labelPlacement="floating"
+            placeholder="Enter name"
             value={name}
             onIonChange={(e) => setName(e.detail.value!)}
           />
         </IonItem>
         <IonItem>
-          <IonLabel position="stacked">Retail Price</IonLabel>
           <IonInput
+            label="Retail Price"
+            labelPlacement="floating"
+            placeholder="Enter price"
             type="number"
             value={retailPrice}
             onIonChange={(e) => setRetailPrice(e.detail.value!)}
           />
         </IonItem>
         <IonItem>
-          <IonLabel position="stacked">Cost</IonLabel>
           <IonInput
+            label="Cost Per Unit"
+            labelPlacement="floating"
+            placeholder="Enter cost"
             type="number"
             value={cost}
             onIonChange={(e) => setCost(e.detail.value!)}
           />
         </IonItem>
         <IonItem>
-          <IonLabel position="stacked">Initial Stock</IonLabel>
           <IonInput
+            label="Initial Stock"
+            labelPlacement="floating"
+            placeholder="Enter stock number"
             type="number"
             value={initStock}
             onIonChange={(e) => setInitStock(e.detail.value!)}
           />
         </IonItem>
         <IonItem>
-          <IonLabel position="stacked">Product Description</IonLabel>
-          <IonInput
-            type="text"
+          <IonTextarea
+            labelPlacement="floating"
+            label="Product Description"
+            placeholder="Enter text"
             value={description}
             onIonChange={(e) => setDescription(e.detail.value!)}
           />

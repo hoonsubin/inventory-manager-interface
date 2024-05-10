@@ -1,5 +1,6 @@
 import ProductListItem from "../components/ProductListItem";
 import AddProductModal from "../components/AddNewProdModal";
+import ProdStockChangeModal from "../components/ProdStockChangeModal";
 import React, { useState, useContext, useEffect } from "react";
 import { Product } from "../types";
 import {
@@ -24,6 +25,11 @@ const InventoryPage: React.FC = () => {
   const inventoryContext = useContext(InventoryContext);
   const [products, setProducts] = useState<Product[]>([]);
   const [showAddProdModal, setShowAddProdModal] = useState(false);
+  const [showStockChangeModal, setShowStockChangeModal] = useState(false);
+  const [prodToChange, setProdToChange] = useState<{
+    product: Product;
+    txType: "sell" | "buy";
+  }>();
 
   if (!inventoryContext) {
     throw new Error(
@@ -32,8 +38,8 @@ const InventoryPage: React.FC = () => {
   }
 
   useEffect(() => {
-    setProducts(inventoryContext.products)
-  }, [inventoryContext.products])
+    setProducts(inventoryContext.products);
+  }, [inventoryContext.products]);
 
   const refresh = (e: CustomEvent) => {
     setTimeout(() => {
@@ -41,8 +47,6 @@ const InventoryPage: React.FC = () => {
     }, 3000);
   };
 
-  // todo: refactor this so that this UI uses a grid of cards with buttons.
-  // Clicking on the card should go to the details page which will also show the same thing but with more information.
   return (
     <IonPage id="home-page">
       <IonHeader>
@@ -57,14 +61,33 @@ const InventoryPage: React.FC = () => {
 
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Inventory</IonTitle>
+            <IonTitle size="large">Current Inventory</IonTitle>
           </IonToolbar>
         </IonHeader>
 
         <IonGrid>
           <IonRow>
             {products.map((p) => (
-              <ProductListItem key={p.id} product={p} />
+              <ProductListItem
+                key={p.id}
+                product={p}
+                onClickRestock={() => {
+                  setShowStockChangeModal(true);
+                  setProdToChange({
+                    product: p,
+                    txType: "buy",
+                  });
+                  console.log("Clicked restock for " + p.name);
+                }}
+                onClickSell={() => {
+                  setShowStockChangeModal(true);
+                  setProdToChange({
+                    product: p,
+                    txType: "sell",
+                  });
+                  console.log("Clicked sell stock for " + p.name);
+                }}
+              />
             ))}
           </IonRow>
         </IonGrid>
@@ -74,6 +97,21 @@ const InventoryPage: React.FC = () => {
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonFab>
+        {prodToChange && (
+          <ProdStockChangeModal
+            isOpen={showStockChangeModal}
+            onClose={() => setShowStockChangeModal(false)}
+            txType={prodToChange.txType}
+            product={prodToChange.product}
+            onChangeStock={(id, stock) => {
+              prodToChange.txType === "buy"
+                ? inventoryContext.buyProductStock(id, stock)
+                : inventoryContext.sellProductStock(id, stock);
+              setProdToChange(undefined);
+            }}
+          />
+        )}
+
         <AddProductModal
           isOpen={showAddProdModal}
           onClose={() => setShowAddProdModal(false)}
@@ -84,7 +122,6 @@ const InventoryPage: React.FC = () => {
             stock: number,
             description: string
           ) => {
-            // error: this is not getting called properly
             inventoryContext.addNewProduct(
               name,
               price,
