@@ -1,4 +1,4 @@
-import { IInventory, UUID, Transaction, InventoryManager, Product } from "../types";
+import { IInventory, UUID, Transaction, Product } from "../types";
 import React, {
   useState,
   ReactNode,
@@ -7,6 +7,7 @@ import React, {
   useEffect,
 } from "react";
 import { getDefaultProducts } from "../data/products";
+import _ from "lodash";
 
 // extend from the inventory interface so that it matches the main class while allowing us to extend UI-specific functions
 interface InventoryContextType extends IInventory {
@@ -26,81 +27,260 @@ export const InventoryContext =
 export const InventoryProvider: React.FC<InventoryProviderType> = ({
   children,
 }) => {
-  // todo: need to find a way to pass the inventory and tx history list at init
-  const [inventoryManager, setInventoryManager] = useState<InventoryManager>(
-    () => {
-      // load initial state from localStorage or create a new InventoryManager
-      const savedInventory = localStorage.getItem("inventory");
-      const savedTransactions = localStorage.getItem("transactions");
-      return new InventoryManager(
-        // either load from the local storage, or get the default items
-        savedInventory ? JSON.parse(savedInventory) : getDefaultProducts(),
-        savedTransactions ? JSON.parse(savedTransactions) : []
-      );
-    }
-  );
-  const products = useMemo(() => {
-    return inventoryManager.products;
-  }, [inventoryManager.products]);
+  // states and getters
 
-  const transactionHistory = useMemo(() => {
-    return inventoryManager.transactionHistory;
-  }, [inventoryManager.transactionHistory]);
+  const [products, setProducts] = useState<Product[]>(getDefaultProducts());
+
+  const [transactionHistory, setTransactionHistory] = useState<Transaction[]>(
+    []
+  );
 
   const totalRevenue = useMemo(() => {
-    return inventoryManager.totalRevenue;
-  }, [inventoryManager.totalRevenue]);
+    // todo: calculate the total revenue by adding all the sales from the transaction history
+
+    const purchaseTx = _.filter(transactionHistory, (i) => i.type === "sell");
+    if (purchaseTx.length < 1) {
+      return 0;
+    }
+
+    return _.reduce(purchaseTx, (acc, i) => acc + i.totalCost, 0);
+  }, [transactionHistory]);
 
   const totalValue = useMemo(() => {
-    return inventoryManager.totalValue;
-  }, [inventoryManager.totalValue]);
+    return _.reduce(products, (acc, i) => acc + i.price, 0);
+  }, [products]);
 
   const totalCosts = useMemo(() => {
-    return inventoryManager.totalCosts;
-  }, [inventoryManager.totalCosts]);
+    const purchaseTx = _.filter(
+      transactionHistory,
+      (i) => i.type === "buy" || i.type === "add"
+    );
+    if (purchaseTx.length < 1) {
+      return 0;
+    }
+
+    return _.reduce(purchaseTx, (acc, i) => acc + i.totalCost, 0);
+  }, [transactionHistory]);
 
   const totalProfit = useMemo(() => {
-    return inventoryManager.totalProfit;
-  }, [inventoryManager.totalProfit]);
+    return totalRevenue - totalCosts;
+  }, [totalRevenue, totalCosts]);
+
+  // functions
 
   const getAllTxOfProd = useCallback(
     (prodId: UUID) => {
-      return transactionHistory.filter((i) => i.id === prodId);
+      return _.filter(transactionHistory, (i) => i.id === prodId);
+    },
+    [transactionHistory]
+  );
+
+  const _newTransaction = useCallback(
+    (tx: Transaction) => {
+      setTransactionHistory([tx, ...transactionHistory]);
     },
     [transactionHistory]
   );
 
   const saveData = (productList: Product[], txList: Transaction[]) => {
-    localStorage.setItem(
-      "inventory",
-      JSON.stringify(productList)
-    );
-    localStorage.setItem(
-      "transactions",
-      JSON.stringify(txList)
-    );
+    localStorage.setItem("inventory", JSON.stringify(productList));
+    localStorage.setItem("transactions", JSON.stringify(txList));
   };
 
   const loadData = () => {
     const savedInventory = localStorage.getItem("inventory");
     const savedTransactions = localStorage.getItem("transactions");
-    setInventoryManager(
-      new InventoryManager(
-        savedInventory ? JSON.parse(savedInventory) : getDefaultProducts(),
-        savedTransactions ? JSON.parse(savedTransactions) : []
-      )
-    );
+
+    if (!savedInventory) {
+      console.log('No saved inventory found, loading in the default values.');
+      // error: inventory is still empty even if it loads the default ones
+      setProducts(getDefaultProducts());
+    }
+    else {
+      setProducts(JSON.parse(savedInventory));
+    }
+
+    if (!savedTransactions) {
+      console.log('No saved transactions found. Loading nothing.')
+    }
+    else {
+      setTransactionHistory(JSON.parse(savedTransactions));
+    }
   };
 
-  // Effect to load data on mount
+  const findProdById = useCallback(
+    (productId: UUID) => {
+      const selectedProduct = _.find(products, (i) => i.id === productId);
+
+      if (!selectedProduct) {
+        throw new Error(`Product with ID ${productId} does not exist`);
+      }
+      return selectedProduct;
+    },
+    [products]
+  );
+
+  const addNewProduct = useCallback(
+    (
+      name: string,
+      retailPrice: number,
+      cost: number,
+      initStock: number,
+      description: string
+    ) => {
+      if (retailPrice < 0.01 || cost < 0.01 || initStock < 0) {
+        throw new Error("Any of the numeric values cannot be below 0");
+      }
+      if (!name) {
+        throw new Error("Please provide the product name");
+      }
+
+      // instead of incrementing the id value, we use a stronger random UUID generator function
+      const prodId = crypto.randomUUID();
+
+      const totalCost = cost * initStock;
+
+      _newTransaction({
+        id: crypto.randomUUID(),
+        type: "add",
+        totalCost,
+        productId: prodId,
+        quantity: initStock,
+        time: new Date(),
+      });
+
+      setProducts([
+        {
+          id: prodId,
+          name: name,
+          price: retailPrice,
+          cost: cost,
+          stock: initStock,
+          description,
+        },
+        ...products,
+      ]);
+
+      // products.push({
+      //   id: prodId,
+      //   name: name,
+      //   price: retailPrice,
+      //   cost: cost,
+      //   stock: initStock,
+      //   description,
+      // });
+      console.log(
+        `Adding new product called ${name} with the price ${retailPrice} and store ${initStock} of it`
+      );
+    },
+    [products, _newTransaction]
+  );
+
+  const removeProduct = useCallback(
+    (productId: UUID, isSelling: boolean = false) => {
+      const productIndexToRemove = _.findIndex(
+        products,
+        (i) => i.id === productId
+      );
+      if (productIndexToRemove === -1) {
+        throw new Error(`Cannot find product with ID ${productId}`);
+      }
+
+      const selectedProduct = products[productIndexToRemove];
+      // sell all stock and remove the product from the inventory
+      if (isSelling) {
+        // todo: instead of simply removing the product, we will also mark it as a sale
+        console.log(
+          `Selling the entire stock of ${selectedProduct.name} from the inventory`
+        );
+      }
+
+      // todo: add new transaction history
+      _newTransaction({
+        id: crypto.randomUUID(),
+        type: isSelling ? "sell" : "remove",
+        totalCost: isSelling
+          ? selectedProduct.price * selectedProduct.stock
+          : 0,
+        productId: selectedProduct.id,
+        quantity: selectedProduct.stock,
+        time: new Date(),
+      });
+
+      // remove the product from the inventory list
+      setProducts(_.remove(products, (i) => i.id === productId));
+      //products.splice(productIndexToRemove, 1);
+      console.log(
+        `Removing product ${selectedProduct.name} from the inventory`
+      );
+    },
+    []
+  );
+
+  const buyProductStock = useCallback((productId: UUID, stock: number) => {
+    if (stock < 1) {
+      throw new Error("New product stock cannot be below 1");
+    }
+    const selectedProduct = findProdById(productId);
+    // todo: add a new transaction history
+    _newTransaction({
+      id: crypto.randomUUID(),
+      type: "buy",
+      totalCost: selectedProduct.cost * stock,
+      productId: selectedProduct.id,
+      quantity: stock,
+      time: new Date(),
+    });
+
+    selectedProduct.stock += stock;
+    console.log(`Bought ${stock} more of ${selectedProduct.name}`);
+  }, []);
+
+  const sellProductStock = useCallback((productId: UUID, stock: number) => {
+    if (stock < 1) {
+      throw new Error("Cannot sell product with a negative number");
+    }
+
+    const selectedProduct = findProdById(productId);
+    if (selectedProduct.stock < stock) {
+      throw new Error(
+        `Product ID ${productId} has only have ${selectedProduct.stock} items left, while you're trying to sell ${stock} items`
+      );
+    }
+
+    // todo: add a new transaction history
+    _newTransaction({
+      id: crypto.randomUUID(),
+      productId: selectedProduct.id,
+      time: new Date(),
+      type: "sell",
+      totalCost: selectedProduct.cost * stock,
+      quantity: stock,
+    });
+
+    selectedProduct.stock -= stock;
+  }, []);
+
+  const getLastTxOfProd = useCallback((prodId: UUID) => {
+    const txOfProd = getAllTxOfProd(prodId);
+    if (txOfProd.length < 1) {
+      return null;
+    }
+    // sort the list into a descending order based on the timestamp and get the first item
+    return _.reverse(_.sortBy(txOfProd, ["time"]))[0];
+  }, []);
+
+  // event hooks
+
+  // effect to load data on mount
   useEffect(() => {
     loadData();
   }, []);
 
-  // Effect to save data whenever it changes
+  // effect to save data whenever it changes
   useEffect(() => {
-    saveData(inventoryManager.products, inventoryManager.transactionHistory);
-  }, [inventoryManager.transactionHistory, inventoryManager.products]);
+    saveData(products, transactionHistory);
+  }, [transactionHistory, products]);
 
   const contextValue: InventoryContextType = {
     products,
@@ -110,39 +290,15 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
     totalRevenue,
     totalValue,
 
-    addNewProduct: (
-      name: string,
-      retailPrice: number,
-      cost: number,
-      initStock: number,
-      description: string,
-    ) => {
-      inventoryManager.addNewProduct(name, retailPrice, cost, initStock, description);
-    },
-    removeProduct: (productId: UUID, isSelling: boolean = false) => {
-      inventoryManager.removeProduct(productId, isSelling);
-    },
-    buyProductStock: (productId: UUID, stock: number) => {
-      inventoryManager.buyProductStock(productId, stock);
-    },
-    sellProductStock: (productId: UUID, stock: number) => {
-      inventoryManager.sellProductStock(productId, stock);
-    },
-    findProdById: (productId: UUID) => {
-      return inventoryManager.findProdById(productId);
-    },
-
+    addNewProduct,
+    removeProduct,
+    buyProductStock,
+    sellProductStock,
+    findProdById,
     saveData,
     loadData,
     getAllTxOfProd,
-    getLastTxOfProd: (prodId: UUID) => {
-      const txOfProd = getAllTxOfProd(prodId);
-      if (txOfProd.length < 1) {
-        return null;
-      }
-      // sort the list into a descending order based on the timestamp and get the first item
-      return txOfProd.sort((a, b) => b.time.getTime() - a.time.getTime())[0];
-    },
+    getLastTxOfProd,
   };
 
   return (

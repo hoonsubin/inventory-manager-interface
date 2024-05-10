@@ -6,7 +6,7 @@ import {
   IonToolbar,
   useIonViewWillEnter
 } from "@ionic/react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Transaction } from "../types";
 import { InventoryContext } from "../context/InventoryContext";
 import ExploreContainer from "../components/ExploreContainer";
@@ -26,6 +26,10 @@ const HistoryPage: React.FC = () => {
     const hist = inventoryContext.transactionHistory;
     setTxHistory(hist);
   });
+
+  useEffect(() => {
+    setTxHistory(inventoryContext.transactionHistory)
+  }, [inventoryContext.transactionHistory])
 
   return (
     <IonPage>

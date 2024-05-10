@@ -1,4 +1,4 @@
-import { Product, UUID } from "../types";
+import { Product } from "../types";
 
 const products: Product[] = [
   {
