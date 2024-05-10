@@ -8,11 +8,15 @@ import {
   IonTitle,
   IonToolbar,
   IonIcon,
-  useIonViewWillEnter,
   IonText,
   IonNote,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonCardContent,
 } from "@ionic/react";
-import { arrowUp, arrowDown, add, remove, bagRemove, bagAdd } from "ionicons/icons";
+import { arrowUp, arrowDown, bagRemove, bagAdd } from "ionicons/icons";
 import React, { useContext, useState, useEffect } from "react";
 import { Transaction, TxType } from "../types";
 import { InventoryContext } from "../context/InventoryContext";
@@ -35,45 +39,39 @@ const HistoryPage: React.FC = () => {
       "Inventory context failed to load. The application cannot work."
     );
   }
-
-  useIonViewWillEnter(() => {
+  useEffect(() => {
     const hist = inventoryContext.transactionHistory;
     setTxHistory(hist);
-  });
-
-  useEffect(() => {
-    // todo: this part does not automatically update
-    setTxHistory(inventoryContext.transactionHistory);
   }, [inventoryContext.transactionHistory]);
 
   const typeToVisuals = (txType: TxType): TxTypeVisual => {
     switch (txType) {
-      case 'add':
+      case "add":
         return {
           icon: arrowDown,
-          msg: 'Add New Product',
-          color: 'primary'
+          msg: "Add New Product",
+          color: "primary",
         };
-      case 'remove':
+      case "remove":
         return {
           icon: arrowUp,
-          msg: 'Removed Product',
-          color: 'primary'
+          msg: "Removed Product",
+          color: "danger",
         };
-      case 'buy':
+      case "buy":
         return {
           icon: bagAdd,
-          msg: 'Restock Product',
-          color: 'warning'
+          msg: "Restock Product",
+          color: "warning",
         };
-      case 'sell':
+      case "sell":
         return {
           icon: bagRemove,
-          msg: 'Sell Product Stock',
-          color: 'danger'
+          msg: "Sell Product Stock",
+          color: "danger",
         };
     }
-  }
+  };
 
   return (
     <IonPage>
@@ -88,6 +86,42 @@ const HistoryPage: React.FC = () => {
             <IonTitle size="large">Transaction History</IonTitle>
           </IonToolbar>
         </IonHeader>
+        <IonCard>
+            <IonCardHeader>
+              <IonCardTitle>Inventory Value</IonCardTitle>
+              <IonCardSubtitle color="primary">
+                {inventoryContext.totalValue.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}{" "}
+                EUR
+              </IonCardSubtitle>
+            </IonCardHeader>
+
+            <IonCardContent>
+              <p>
+                Total Revenue:{" "}
+                {inventoryContext.totalRevenue.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}{" "}
+                EUR
+              </p>
+              <p>
+                Total Costs:{" "}
+                {inventoryContext.totalCosts.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}{" "}
+                EUR
+              </p>
+
+              <p>
+                Current Profit:{" "}
+                {inventoryContext.totalProfit.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}{" "}
+                EUR
+              </p>
+            </IonCardContent>
+          </IonCard>
         {txHistory.length > 0 ? (
           <>
             <IonList inset={true}>
@@ -111,7 +145,10 @@ const HistoryPage: React.FC = () => {
                           {i.type === "add" || i.type === "buy"
                             ? "Total Cost:"
                             : "Total Gains:"}{" "}
-                          {i.totalCost.toLocaleString(undefined, { minimumFractionDigits: 2 })} EUR
+                          {i.totalCost.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                          })}{" "}
+                          EUR
                         </p>
                         <p>Transaction ID: {i.id}</p>
                       </IonText>

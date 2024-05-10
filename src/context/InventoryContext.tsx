@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import * as helpers from '../helpers';
+import * as helpers from "../helpers";
 import _ from "lodash";
 
 // extend from the inventory interface so that it matches the main class while allowing us to extend UI-specific functions
@@ -25,7 +25,6 @@ export const InventoryContext =
 export const InventoryProvider: React.FC<InventoryProviderType> = ({
   children,
 }) => {
-
   // states and getters
 
   const [products, setProducts] = useState<Product[]>(helpers.loadProdData());
@@ -44,7 +43,7 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
   }, [transactionHistory]);
 
   const totalValue = useMemo(() => {
-    return _.reduce(products, (acc, i) => acc + i.price, 0);
+    return _.reduce(products, (acc, i) => acc + i.price * i.stock, 0);
   }, [products]);
 
   const totalCosts = useMemo(() => {
@@ -67,7 +66,7 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
 
   const getAllTxOfProd = useCallback(
     (prodId: UUID) => {
-      return _.filter(transactionHistory, (i) => i.id === prodId);
+      return _.filter(transactionHistory, (i) => i.productId === prodId);
     },
     [transactionHistory]
   );
@@ -78,8 +77,6 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
     },
     [transactionHistory]
   );
-
-  
 
   const findProdById = useCallback(
     (productId: UUID) => {
@@ -219,7 +216,7 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
         productId: selectedProduct.id,
         time: new Date(),
         type: "sell",
-        totalCost: selectedProduct.cost * stock,
+        totalCost: selectedProduct.price * stock,
         quantity: stock,
       });
 

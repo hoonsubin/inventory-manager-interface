@@ -16,6 +16,11 @@ import {
   IonFabButton,
   IonGrid,
   IonRow,
+  IonCard,
+  IonCardTitle,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardContent,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { InventoryContext } from "../context/InventoryContext";
@@ -66,6 +71,42 @@ const InventoryPage: React.FC = () => {
         </IonHeader>
 
         <IonGrid>
+          <IonCard>
+            <IonCardHeader>
+              <IonCardTitle>Inventory Value</IonCardTitle>
+              <IonCardSubtitle color="primary">
+                {inventoryContext.totalValue.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}{" "}
+                EUR
+              </IonCardSubtitle>
+            </IonCardHeader>
+
+            <IonCardContent>
+              <p>
+                Total Revenue:{" "}
+                {inventoryContext.totalRevenue.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}{" "}
+                EUR
+              </p>
+              <p>
+                Total Costs:{" "}
+                {inventoryContext.totalCosts.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}{" "}
+                EUR
+              </p>
+
+              <p>
+                Current Profit:{" "}
+                {inventoryContext.totalProfit.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}{" "}
+                EUR
+              </p>
+            </IonCardContent>
+          </IonCard>
           <IonRow>
             {products.map((p) => (
               <ProductListItem

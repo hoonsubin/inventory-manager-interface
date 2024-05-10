@@ -18,7 +18,11 @@ interface ProductListItemProps {
   onClickSell: (product: Product) => void;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({ product, onClickRestock, onClickSell }) => {
+const ProductListItem: React.FC<ProductListItemProps> = ({
+  product,
+  onClickRestock,
+  onClickSell,
+}) => {
   const history = useHistory();
 
   const onClickDetails = () => {
@@ -30,18 +34,42 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onClickResto
       <IonCard>
         <IonCardHeader>
           <IonCardTitle>{product.name}</IonCardTitle>
-          <IonCardSubtitle>Last Transaction: {new Date().toDateString()}</IonCardSubtitle>
+          <IonCardSubtitle>
+            Last Transaction: {new Date().toDateString()}
+          </IonCardSubtitle>
         </IonCardHeader>
 
         <IonCardContent>
-          <p>Retail Price: {product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })} EUR</p>
-          <p>Product Cost: {product.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })} EUR</p>
+          <p>
+            Retail Price:{" "}
+            {product.price.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}{" "}
+            EUR
+          </p>
+          <p>
+            Product Cost:{" "}
+            {product.cost.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}{" "}
+            EUR
+          </p>
           <p>Current Stock: {product.stock}</p>
         </IonCardContent>
 
-        <IonButton fill="clear" onClick={() => onClickRestock(product)}>Restock +</IonButton>
-        <IonButton fill="clear" disabled={product.stock < 1 } onClick={() => onClickSell(product)}>Sell Stock -</IonButton>
-        <IonButton fill="clear" onClick={onClickDetails}>Details</IonButton>
+        <IonButton fill="clear" onClick={() => onClickRestock(product)}>
+          Restock +
+        </IonButton>
+        <IonButton
+          fill="clear"
+          disabled={product.stock < 1}
+          onClick={() => onClickSell(product)}
+        >
+          Sell Stock -
+        </IonButton>
+        <IonButton fill="clear" onClick={onClickDetails}>
+          Details
+        </IonButton>
       </IonCard>
     </IonCol>
   );
