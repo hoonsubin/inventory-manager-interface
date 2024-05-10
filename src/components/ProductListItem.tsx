@@ -8,7 +8,7 @@ import {
   IonItemOption,
   IonIcon,
 } from "@ionic/react";
-import { Message, Product } from "../types";
+import { Product } from "../types";
 import { addCircle, cash, trash } from "ionicons/icons";
 import "./ProductListItem.css";
 
@@ -25,7 +25,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
           <h2>
             {product.name}
             <span className="date">
-              <IonNote>{new Date().toDateString()}</IonNote>
+              {/* Get the last tx based on the tx history list */}
+              <IonNote>Last Transaction: {new Date().toDateString()}</IonNote>
             </span>
           </h2>
           <h3>Retail Price: {product.price} EUR</h3>
@@ -53,7 +54,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
           expandable={true}
           onClick={() =>
             window.alert(
-              `Are you sure you want to remove "${product.name}"?`
+              `Are you sure you want to remove "${product.name}"? Or do you wish to sell the entire stock?`
             )
           }
         >

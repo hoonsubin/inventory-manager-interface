@@ -23,7 +23,7 @@
   justify-content: space-between;
 }
 
-#view-product-page ion-item .price {
+#view-product-page ion-item .last-tx {
   align-items: center;
   display: flex;
 }

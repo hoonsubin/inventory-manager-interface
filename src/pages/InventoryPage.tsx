@@ -61,14 +61,6 @@ const InventoryPage: React.FC = () => {
           <IonFabButton onClick={() => window.alert("Adding a new product")}>
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
-          {/* <IonFabList side="top">
-            <IonFabButton onClick={() => window.alert("hello world")}>
-              <IonIcon icon={colorPalette}></IonIcon>
-            </IonFabButton>
-            <IonFabButton>
-              <IonIcon icon={globe}></IonIcon>
-            </IonFabButton>
-          </IonFabList> */}
         </IonFab>
 
       </IonContent>
