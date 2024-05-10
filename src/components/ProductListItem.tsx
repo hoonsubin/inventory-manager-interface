@@ -10,7 +10,7 @@ import {
 import { useHistory } from "react-router-dom";
 import React from "react";
 import { Product } from "../types";
-import "./ProductListItem.css";
+//import "./ProductListItem.css";
 
 interface ProductListItemProps {
   product: Product;

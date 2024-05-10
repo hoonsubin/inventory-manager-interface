@@ -36,14 +36,13 @@ export type Product = {
   description?: string;
 }
 
+export type TxType = "sell" | "buy" | "remove" | "add";
+
 export type Transaction = {
   id: UUID;
   productId: UUID;
   quantity: number;
   totalCost: number;
-  type: "sell" | "buy" | "remove" | "add";
+  type: TxType;
   time: Date;
 }
-
-// re-export the inventory manager class
-export * from "./InventoryManager";

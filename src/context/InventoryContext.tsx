@@ -159,7 +159,6 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
         console.log(
           `Selling the entire stock of ${selectedProduct.name} from the inventory`
         );
-        // todo: implement the remove as a sell all function
       }
       _newTransaction({
         id: crypto.randomUUID(),
@@ -196,6 +195,7 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
         time: new Date(),
       });
 
+      // todo: this may not work since the obj ref does not change
       selectedProduct.stock += stock;
       console.log(`Bought ${stock} more of ${selectedProduct.name}`);
     },
@@ -223,6 +223,7 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
         quantity: stock,
       });
 
+      // todo: this may not work since the obj ref does not change
       selectedProduct.stock -= stock;
     },
     [_newTransaction, findProdById]

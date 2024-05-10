@@ -25,7 +25,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   onClose,
   onAddNewProduct,
 }) => {
-  // todo: need to edit the style so it looks better
+  // todo: need to edit the style so it looks better, also add input sanitation and checks
   const [name, setName] = useState("");
   const [retailPrice, setRetailPrice] = useState("");
   const [cost, setCost] = useState("");

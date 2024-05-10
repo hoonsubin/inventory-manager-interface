@@ -10,7 +10,6 @@ import {
   IonRefresherContent,
   IonTitle,
   IonToolbar,
-  useIonViewWillEnter,
   IonIcon,
   IonFab,
   IonFabButton,
@@ -31,11 +30,6 @@ const InventoryPage: React.FC = () => {
       "Inventory context failed to load. The application cannot work."
     );
   }
-
-  // useIonViewWillEnter(() => {
-  //   const prods = inventoryContext.products;
-  //   setProducts(prods);
-  // });
 
   useEffect(() => {
     setProducts(inventoryContext.products)
