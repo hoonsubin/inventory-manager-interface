@@ -10,7 +10,7 @@ import { getDefaultProducts } from "../data/products";
 
 // extend from the inventory interface so that it matches the main class while allowing us to extend UI-specific functions
 interface InventoryContextType extends IInventory {
-  getLastTxOfProd: (prodId: UUID) => Transaction;
+  getLastTxOfProd: (prodId: UUID) => Transaction | null;
   getAllTxOfProd: (prodId: UUID) => Transaction[];
   saveData: (productList: Product[], txList: Transaction[]) => void;
   loadData: () => void;
@@ -137,6 +137,9 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
     getAllTxOfProd,
     getLastTxOfProd: (prodId: UUID) => {
       const txOfProd = getAllTxOfProd(prodId);
+      if (txOfProd.length < 1) {
+        return null;
+      }
       // sort the list into a descending order based on the timestamp and get the first item
       return txOfProd.sort((a, b) => b.time.getTime() - a.time.getTime())[0];
     },

@@ -14,6 +14,8 @@ import {
   IonIcon,
   IonFab,
   IonFabButton,
+  IonGrid,
+  IonRow,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { InventoryContext } from "../context/InventoryContext";
@@ -60,11 +62,13 @@ const InventoryPage: React.FC = () => {
           </IonToolbar>
         </IonHeader>
 
-        <IonList>
-          {products.map((p) => (
-            <ProductListItem key={p.id} product={p} />
-          ))}
-        </IonList>
+        <IonGrid>
+          <IonRow>
+            {products.map((p) => (
+              <ProductListItem key={p.id} product={p} />
+            ))}
+          </IonRow>
+        </IonGrid>
 
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
           <IonFabButton onClick={() => window.alert("Adding a new product")}>
