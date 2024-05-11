@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonModal,
   IonButton,
   IonContent,
   IonInput,
   IonItem,
-  IonLabel,
   IonTextarea,
 } from "@ionic/react";
 
@@ -26,12 +25,39 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   onClose,
   onAddNewProduct,
 }) => {
-  // todo: need to edit the style so it looks better, also add input sanitation and checks
   const [name, setName] = useState("");
   const [retailPrice, setRetailPrice] = useState("");
   const [cost, setCost] = useState("");
   const [initStock, setInitStock] = useState("");
   const [description, setDescription] = useState("");
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  // const validateCurrency = (amount: string) => {
+  //   return amount.match(/^[+-]?[0-9]{1,3}(?:[0-9]*(?:[.,][0-9]{2})?|(?:,[0-9]{3})*(?:\.[0-9]{2})?|(?:\.[0-9]{3})*(?:,[0-9]{2})?)$/);
+  // }
+
+  useEffect(() => {
+    // Validate inputs and set form validity
+    const validateForm = () => {
+      const retailPriceNum = parseFloat(retailPrice);
+      const costNum = parseFloat(cost);
+      const initStockNum = parseInt(initStock, 10);
+      const isNameValid = name.trim() !== "";
+      const isRetailPriceValid = !isNaN(retailPriceNum) && retailPriceNum > 0;
+      const isCostValid = !isNaN(costNum) && costNum > 0;
+      const isInitStockValid = !isNaN(initStockNum) && initStockNum >= 0;
+      const isDescriptionValid = description.trim() !== "";
+      return (
+        isNameValid &&
+        isRetailPriceValid &&
+        isCostValid &&
+        isInitStockValid &&
+        isDescriptionValid
+      );
+    };
+
+    setIsFormValid(validateForm());
+  }, [name, retailPrice, cost, initStock, description]);
 
   const handleAddProduct = () => {
     // pass the new product information to the parent component
@@ -54,7 +80,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             labelPlacement="floating"
             placeholder="Enter name"
             value={name}
-            onIonChange={(e) => setName(e.detail.value!)}
+            onIonInput={(e) => setName(e.detail.value!)}
           />
         </IonItem>
         <IonItem>
@@ -64,7 +90,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             placeholder="Enter price"
             type="number"
             value={retailPrice}
-            onIonChange={(e) => setRetailPrice(e.detail.value!)}
+            onIonInput={(e) => setRetailPrice(e.detail.value!)}
           />
         </IonItem>
         <IonItem>
@@ -74,7 +100,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             placeholder="Enter cost"
             type="number"
             value={cost}
-            onIonChange={(e) => setCost(e.detail.value!)}
+            onIonInput={(e) => setCost(e.detail.value!)}
           />
         </IonItem>
         <IonItem>
@@ -84,7 +110,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             placeholder="Enter stock number"
             type="number"
             value={initStock}
-            onIonChange={(e) => setInitStock(e.detail.value!)}
+            onIonInput={(e) => setInitStock(e.detail.value!)}
           />
         </IonItem>
         <IonItem>
@@ -93,10 +119,10 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             label="Product Description"
             placeholder="Enter text"
             value={description}
-            onIonChange={(e) => setDescription(e.detail.value!)}
+            onIonInput={(e) => setDescription(e.detail.value!)}
           />
         </IonItem>
-        <IonButton expand="block" onClick={handleAddProduct}>
+        <IonButton expand="block" onClick={handleAddProduct} disabled={!isFormValid}>
           Add Product
         </IonButton>
         <IonButton expand="block" color="medium" onClick={onClose}>
