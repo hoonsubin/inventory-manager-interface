@@ -10,6 +10,8 @@
 
 # production
 /dist
+/release
+/dist-electron
 
 # misc
 .DS_Store
