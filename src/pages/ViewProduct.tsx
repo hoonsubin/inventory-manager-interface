@@ -117,6 +117,9 @@ const ViewProduct: React.FC = () => {
                     EUR
                   </IonNote>
                 </h3>
+                <h3>
+                  Product ID: <IonNote>{product.id}</IonNote>
+                </h3>
               </IonLabel>
             </IonItem>
 
