@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build:all": "npm run build:web && electron-builder -mwl",
-    "build:electron": "npm run build:build:web && electron-builder",
+    "build:electron": "npm run build:web && electron-builder",
     "build:web": "tsc && vite build",
     "preview": "vite preview",
     "test.e2e": "cypress run",
