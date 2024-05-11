@@ -1,5 +1,5 @@
 {
-  "name": "mmt-dev-assignmnet",
+  "name": "inventory-manager-interface",
   "integrations": {
     "capacitor": {}
   },
