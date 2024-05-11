@@ -48,8 +48,12 @@ import "@ionic/react/css/palettes/dark.system.css";
 /* Theme variables */
 import "./theme/variables.css";
 
+// this function is needed to initialize the Ionic framework in React
 setupIonicReact();
 
+/**
+ * The main app component that defines the page routes and the bottom tab buttons for navigation.
+ */
 const App: React.FC = () => (
   <IonApp>
     <IonReactHashRouter>

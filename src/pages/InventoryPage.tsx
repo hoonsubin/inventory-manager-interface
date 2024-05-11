@@ -7,8 +7,6 @@ import {
   IonContent,
   IonHeader,
   IonPage,
-  IonRefresher,
-  IonRefresherContent,
   IonTitle,
   IonToolbar,
   IonIcon,
@@ -26,32 +24,45 @@ import { add } from "ionicons/icons";
 import { InventoryContext } from "../context/InventoryContext";
 import "./InventoryPage.css";
 
+/**
+ * The main inventory page that first-time users will see when they open the app.
+ * This page contains a list of all current products and the inventory valuation info.
+ * Users can sell, restock, and add new products in this page.
+ */
 const InventoryPage: React.FC = () => {
+  // consume the inventory logic context that was defined in `src/context/InventoryContext.tsx`
   const inventoryContext = useContext(InventoryContext);
+
+  // page state for tracking all products in the inventory
   const [products, setProducts] = useState<Product[]>([]);
+  // page state for tracking if the add new product modal should be rendered or not
   const [showAddProdModal, setShowAddProdModal] = useState(false);
+  // page state for tracking if the sell/buy stock modal should be rendered or not
   const [showStockChangeModal, setShowStockChangeModal] = useState(false);
+  // page state to manage the product that the user want to change the stock
   const [prodToChange, setProdToChange] = useState<{
     product: Product;
     txType: "sell" | "buy";
   }>();
 
+  // throw an error if the inventory logic could not load
+  // in most cases, this should never happen, but in TypeScript, we can't reasonably make that assumption
   if (!inventoryContext) {
     throw new Error(
       "Inventory context failed to load. The application cannot work."
     );
   }
 
+  // hook for updating the product list
   useEffect(() => {
-    setProducts(inventoryContext.products);
+    // get the full product list from the inventory manager and assign it into another reference
+    const inv = inventoryContext.products;
+    // assign that reference to the page state manager so all renders work correctly when the history changes
+    setProducts(inv);
+    // this block will run every time the product list changes
   }, [inventoryContext.products]);
 
-  const refresh = (e: CustomEvent) => {
-    setTimeout(() => {
-      e.detail.complete();
-    }, 3000);
-  };
-
+  // render the inventory page UI
   return (
     <IonPage id="home-page">
       <IonHeader>
@@ -60,9 +71,6 @@ const InventoryPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonRefresher slot="fixed" onIonRefresh={refresh}>
-          <IonRefresherContent></IonRefresherContent>
-        </IonRefresher>
 
         <IonHeader collapse="condense">
           <IonToolbar>
@@ -144,7 +152,7 @@ const InventoryPage: React.FC = () => {
             onClose={() => setShowStockChangeModal(false)}
             txType={prodToChange.txType}
             product={prodToChange.product}
-            onChangeStock={(id, stock) => {
+            onConfirmChangeStock={(id, stock) => {
               prodToChange.txType === "buy"
                 ? inventoryContext.buyProductStock(id, stock)
                 : inventoryContext.sellProductStock(id, stock);

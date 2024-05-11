@@ -9,21 +9,29 @@ This project is written using Ionic and Electron with React, TypeScript.
 
 This project requires Node.js and NPM to install the packages and run the project.
 
-## How To Use
+## Features
+
+This project is meant to be built and used on EVERY modern platforms.
+You can access the web version here: <https://hoonsubin.github.io/inventory-manager-interface/>
+
+With this app, you can add new products, sell existing stocks, restock, view all transaction history (every interaction with a product is considered as a transaction), and track all cost and profit-related numbers.
 
 ### Installing and Building Locally
 
 ```bash
 npm install # installs all deps
-npm run build # builds the project for the desktop environment
+npm run build:web # builds the web app version of the project. This is the foundation for all build actions
+npm run build:electron # builds the desktop application for the local platform (ex: macOS or Windows)
+npm run build:all # builds the project for all platforms. The mac build will fail if you are not running this from macOS due to package licensing
 npm run dev # run a developer build of the app locally
 ```
 
-You can double-click the executable to run the application on your device.
-So far, the application was tested on Windows and macOS (Apple Silicon).
+The web build will be available in the `/dist` folder, while all desktop versions will be available inside the `/release` folder.
 
 ### Using the Application
 
+You can double-click the executable to run the application on your device.
+So far, the application was tested on Windows and macOS (Apple Silicon).
 
 ## Project Structure
 
@@ -60,7 +68,6 @@ So far, the application was tested on Windows and macOS (Apple Silicon).
 │   │   ├── ExploreContainer.css
 │   │   ├── ExploreContainer.tsx
 │   │   ├── ProdStockChangeModal.tsx
-│   │   ├── ProductListItem.css
 │   │   └── ProductListItem.tsx
 │   ├── context
 │   │   └── InventoryContext.tsx
@@ -74,8 +81,6 @@ So far, the application was tested on Windows and macOS (Apple Silicon).
 │   │   ├── HistoryPage.tsx
 │   │   ├── InventoryPage.css
 │   │   ├── InventoryPage.tsx
-│   │   ├── ValuationPage.css
-│   │   ├── ValuationPage.tsx
 │   │   ├── ViewProduct.css
 │   │   └── ViewProduct.tsx
 │   ├── setupTests.ts

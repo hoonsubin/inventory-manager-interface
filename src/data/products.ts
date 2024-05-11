@@ -1,5 +1,9 @@
 import { Product } from "../types";
 
+/**
+ * A list of dummy products that will be loaded when the user first opens the app.
+ * All the product descriptions are AI-generated based on the product name. Other values were randomly chosen
+ */
 const products: Product[] = [
   {
     id: "1372a11b-db4b-4e44-878f-0836ce43af5d",
@@ -169,4 +173,8 @@ const products: Product[] = [
   },
 ];
 
+/**
+ * A simple helper function that loads the product list.
+ * @returns the dummy product list
+ */
 export const getDefaultProducts = () => products;

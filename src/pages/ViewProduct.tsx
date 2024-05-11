@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { InventoryContext } from "../context/InventoryContext";
 import { Product, UUID, Transaction } from "../types";
 import { typeToVisuals } from "../helpers";
@@ -15,7 +15,6 @@ import {
   IonPage,
   IonText,
   IonToolbar,
-  useIonViewWillEnter,
 } from "@ionic/react";
 import { bag } from "ionicons/icons";
 import { useParams } from "react-router";
@@ -23,27 +22,45 @@ import ExploreContainer from "../components/ExploreContainer";
 import _ from "lodash";
 import "./ViewProduct.css";
 
+/**
+ * The product detail page that is rendered when the user clicks the product detail button in the inventory page.
+ * This page will render the product description and the ID alongside other information you can view from the main page.
+ */
 const ViewProduct: React.FC = () => {
-  const [product, setProduct] = useState<Product>();
-  const [prodHistory, setProdHistory] = useState<Transaction[]>([]);
+  // consume the inventory logic context that was defined in `src/context/InventoryContext.tsx`
   const inventoryContext = useContext(InventoryContext);
 
+  // page state for tracking the current product object that the user is viewing
+  const [product, setProduct] = useState<Product>();
+  // page state for tracking the transaction history for the current product that the user is viewing
+  const [prodHistory, setProdHistory] = useState<Transaction[]>([]);
+  
+  // throw an error if the inventory logic could not load
+  // in most cases, this should never happen, but in TypeScript, we can't reasonably make that assumption
   if (!inventoryContext) {
     throw new Error(
       "Inventory context failed to load. The application cannot work."
     );
   }
 
+  // get the URL param (specifically, the `id` param) of the current page and cast it as a UUID type
   const params = useParams<{ id: UUID }>();
 
-  useIonViewWillEnter(() => {
-    // todo: this will always load the default data, we need to make sure that it uses the latest data from the manager
+  // initial hook that runs only once before the page is mounted
+  // this is where we set the transaction history
+  useEffect(() => {
+    // get the product information by taking the product ID from the URL param and passing it to the custom function
+    // this way, if the user manually changes the URL, the app can still render the correct view
     const prod = inventoryContext.findProdById(params.id);
 
+    // get all the transaction history for this product, and assign it to the page state
     setProdHistory(inventoryContext.getAllTxOfProd(params.id));
+    // also set the product as well
     setProduct(prod);
-  });
+  }, []);
 
+  // render the main product view that will change depending on the ID
+  // if the product with the given ID doesn't exist, we ensure the page describes that and there is no error
   return (
     <IonPage id="view-product-page">
       <IonHeader translucent>

@@ -10,25 +10,39 @@ import {
 import { useHistory } from "react-router-dom";
 import React from "react";
 import { Product } from "../types";
-//import "./ProductListItem.css";
 
+/**
+ * The properties for the product list item that the dev must provide
+ */
 interface ProductListItemProps {
+  // the product that will be rendered as an item in the grid
   product: Product;
+  // pass the callback function when the user clicks the restock button
   onClickRestock: (product: Product) => void;
+  // pass the callback function when the user clicks the sell button
   onClickSell: (product: Product) => void;
 }
 
+/**
+ * Component that renders the individual product info card in the main inventory page.
+ * Users can see all information about the product except the product ID and the description.
+ */
 const ProductListItem: React.FC<ProductListItemProps> = ({
   product,
   onClickRestock,
   onClickSell,
 }) => {
+  // because we reroute the user to the product detail page, we need to use the browser history
   const history = useHistory();
 
+  // defines the behavior when the user clicks the product detail button
   const onClickDetails = () => {
+    // we push the browser history to the following URL with the product ID
+    // the rest is handled by the router that we defined in `src/App.tsx`
     history.push(`/product/${product.id}`);
   };
 
+  // renders the component
   return (
     <IonCol size="12" size-md="4" key={product.id}>
       <IonCard>

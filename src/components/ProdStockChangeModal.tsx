@@ -9,40 +9,66 @@ import {
 } from "@ionic/react";
 import { Product, UUID } from "../types";
 
+/**
+ * The component property for the product stock change modal.
+ * We need the basic modal props like `isOpen`, `onClose`, and the confirm callback (`onConfirmChangeStock` in this case).
+ * Plus, this also takes the product type and the transaction direction, as we use this modal for selling and buying.
+ */
 interface ProdStockChangeModalProps {
+  // determines if the modal should be rendered or not
   isOpen: boolean;
+  // the product data that this modal will mutate
   product: Product;
+  // the transaction direction. The user can either buy or sell their stocks for a given product
   txType: "sell" | "buy";
+  // the behavior for when the modal is closed
   onClose: () => void;
-  onChangeStock: (prodId: UUID, stock: number) => void;
+  // the confirmation callback function that is used to send the data to the parent component
+  onConfirmChangeStock: (prodId: UUID, stock: number) => void;
 }
 
+/**
+ * Modal component for changing the product stock. You can either sell or restock for an existing product
+ */
 const ProdStockChangeModal: React.FC<ProdStockChangeModalProps> = ({
   isOpen,
   onClose,
   txType,
-  onChangeStock,
+  onConfirmChangeStock,
   product,
 }) => {
-  // todo: need to edit the style so it looks better, also add input sanitation and checks
+  // component state that tracks the amount of product stock that will be changed
   const [stockChange, setStockChange] = useState(0);
 
+  // a getter function that is used to track if the user input is valid
+  // note that in `src/components/AddNewProdModal.tsx`, we used a component state and hooks to track the input state, while here, we are using `useMemo`
+  // they are exactly the same in function, but since this modal requires less inputs, we try to keep it short and simple
   const isValidInput = useMemo(() => {
+
+    // if the user is trying to sell more items than they have, we return false
     if (txType === "sell" && stockChange > product.stock) {
       return false;
     }
+
+    // return true only if the stock change is a valid number,
+    // it's above 0, and it's an integer (since fractional selling doesn't make any sense)
     return (
       !Number.isNaN(stockChange) &&
       stockChange > 0 &&
       Number.isInteger(stockChange)
     );
+    // this hook will update every time the user changes the amount
   }, [stockChange]);
 
-  const handleAddProduct = () => {
-    onChangeStock(product.id, stockChange);
+  // a function that defines the behavior when the user confirms the stock change
+  const handleChangeStock = () => {
+    // invoke the callback function so the parent component can see the results
+    onConfirmChangeStock(product.id, stockChange);
     onClose(); // close the modal after adding the product
   };
 
+  // render the UI. Note that the content slightly changes depending on the direction of the transaction through tuples
+  // we also format the currency numbers so it's easier to read
   return (
     <IonModal isOpen={isOpen} onDidDismiss={onClose}>
       <IonContent className="ion-padding">
@@ -50,7 +76,6 @@ const ProdStockChangeModal: React.FC<ProdStockChangeModalProps> = ({
           <IonLabel>
             <h1>{product.name}</h1>
             <p>Please select how much you wish to {txType}</p>
-            {/* todo: add 'sell all' check button for the sell type */}
           </IonLabel>
         </IonItem>
         <IonItem>
@@ -98,37 +123,12 @@ const ProdStockChangeModal: React.FC<ProdStockChangeModalProps> = ({
             )}
           </IonLabel>
         </IonItem>
-        {/* todo: add automated cost and revenue calculator */}
-        {/* <IonItem>
-          <IonLabel position="stacked">Cost</IonLabel>
-          <IonInput
-            type="number"
-            value={cost}
-            onIonChange={(e) => setCost(e.detail.value!)}
-          />
-        </IonItem>
-        <IonItem>
-          <IonLabel position="stacked">Initial Stock</IonLabel>
-          <IonInput
-            type="number"
-            value={initStock}
-            onIonChange={(e) => setInitStock(e.detail.value!)}
-          />
-        </IonItem>
-        <IonItem>
-          <IonLabel position="stacked">Product Description</IonLabel>
-          <IonInput
-            type="text"
-            value={description}
-            onIonChange={(e) => setDescription(e.detail.value!)}
-          />
-        </IonItem> */}
         <IonButton
           expand="block"
-          onClick={handleAddProduct}
+          onClick={handleChangeStock}
           disabled={!isValidInput}
         >
-          {txType === "buy" ? "Restock Product" : "Sell Stock"}
+          {txType === "sell" ? "Sell Stock" :  "Restock Product"}
         </IonButton>
         <IonButton expand="block" color="medium" onClick={onClose}>
           Cancel
