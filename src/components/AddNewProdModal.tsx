@@ -119,6 +119,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             label="Product Description"
             placeholder="Enter text"
             value={description}
+            rows={5}
             onIonInput={(e) => setDescription(e.detail.value!)}
           />
         </IonItem>

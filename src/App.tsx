@@ -9,7 +9,7 @@ import {
   IonTabs,
   setupIonicReact,
 } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
+import { IonReactHashRouter } from "@ionic/react-router";
 import {
   storefrontOutline,
   timeOutline,
@@ -52,7 +52,7 @@ setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-    <IonReactRouter>
+    <IonReactHashRouter>
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/inventory">
@@ -79,7 +79,7 @@ const App: React.FC = () => (
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
-    </IonReactRouter>
+    </IonReactHashRouter>
   </IonApp>
 );
 

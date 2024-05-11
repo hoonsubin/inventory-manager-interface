@@ -16,20 +16,14 @@ import {
   IonCardSubtitle,
   IonCardContent,
 } from "@ionic/react";
-import { arrowUp, arrowDown, bagRemove, bagAdd } from "ionicons/icons";
 import React, { useContext, useState, useEffect } from "react";
-import { Transaction, TxType } from "../types";
+import { Transaction } from "../types";
 import { InventoryContext } from "../context/InventoryContext";
 import ExploreContainer from "../components/ExploreContainer";
 import _ from "lodash";
+import { typeToVisuals } from "../helpers";
 
 import "./HistoryPage.css";
-
-interface TxTypeVisual {
-  icon: string;
-  msg: string;
-  color: string;
-}
 
 const HistoryPage: React.FC = () => {
   const inventoryContext = useContext(InventoryContext);
@@ -43,35 +37,6 @@ const HistoryPage: React.FC = () => {
     const hist = inventoryContext.transactionHistory;
     setTxHistory(hist);
   }, [inventoryContext.transactionHistory]);
-
-  const typeToVisuals = (txType: TxType): TxTypeVisual => {
-    switch (txType) {
-      case "add":
-        return {
-          icon: arrowDown,
-          msg: "Add New Product",
-          color: "primary",
-        };
-      case "remove":
-        return {
-          icon: arrowUp,
-          msg: "Removed Product",
-          color: "danger",
-        };
-      case "buy":
-        return {
-          icon: bagAdd,
-          msg: "Restock Product",
-          color: "warning",
-        };
-      case "sell":
-        return {
-          icon: bagRemove,
-          msg: "Sell Product Stock",
-          color: "danger",
-        };
-    }
-  };
 
   return (
     <IonPage>

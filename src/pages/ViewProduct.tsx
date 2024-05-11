@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { InventoryContext } from "../context/InventoryContext";
-import { Product, UUID, Transaction, TxType } from "../types";
+import { Product, UUID, Transaction } from "../types";
+import { typeToVisuals } from "../helpers";
 import {
   IonBackButton,
   IonButtons,
@@ -16,7 +17,7 @@ import {
   IonToolbar,
   useIonViewWillEnter,
 } from "@ionic/react";
-import { arrowDown, arrowUp, bag, bagAdd, bagRemove } from "ionicons/icons";
+import { bag } from "ionicons/icons";
 import { useParams } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
 import _ from "lodash";
@@ -32,35 +33,6 @@ const ViewProduct: React.FC = () => {
       "Inventory context failed to load. The application cannot work."
     );
   }
-
-  const typeToVisuals = (txType: TxType) => {
-    switch (txType) {
-      case "add":
-        return {
-          icon: arrowDown,
-          msg: "Add New Product",
-          color: "primary",
-        };
-      case "remove":
-        return {
-          icon: arrowUp,
-          msg: "Removed Product",
-          color: "danger",
-        };
-      case "buy":
-        return {
-          icon: bagAdd,
-          msg: "Restock Product",
-          color: "warning",
-        };
-      case "sell":
-        return {
-          icon: bagRemove,
-          msg: "Sell Product Stock",
-          color: "danger",
-        };
-    }
-  };
 
   const params = useParams<{ id: UUID }>();
 
@@ -176,7 +148,7 @@ const ViewProduct: React.FC = () => {
                   </IonList>
                 </>
               ) : (
-                <ExploreContainer name="Transaction History Not Found" />
+                <h1>Transaction History Not Found</h1>
               )}
             </div>
           </>
