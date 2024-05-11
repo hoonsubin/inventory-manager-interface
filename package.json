@@ -6,7 +6,9 @@
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && electron-builder -mwl",
+    "build:all": "npm run build:web && electron-builder -mwl",
+    "build:electron": "npm run build:build:web && electron-builder",
+    "build:web": "tsc && vite build",
     "preview": "vite preview",
     "test.e2e": "cypress run",
     "test.unit": "vitest",
