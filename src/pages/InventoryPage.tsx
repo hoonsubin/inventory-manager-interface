@@ -20,6 +20,7 @@ import {
   IonCardSubtitle,
   IonCardContent,
   IonAlert,
+  useIonToast,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { InventoryContext } from "../context/InventoryContext";
@@ -36,17 +37,30 @@ const InventoryPage: React.FC = () => {
 
   /**
    * Show the opening welcome instruction if it's the first time visiting
-   */ 
+   */
   const showOpening = !localStorage.getItem("sawOpening");
   /**
    * The welcome message and first-time use instructions
    */
-  const welcomeMsg = "Welcome to the inventory management app!\nTry adding a new product by clicking the plus button on the bottom right corner!";
+  const welcomeMsg =
+    "Welcome to the inventory management app!\nTry adding a new product by clicking the plus button on the bottom right corner!";
   /**
    * Handle the welcome message dismiss behavior
    */
   const handleOnDismissWelcome = () => {
     localStorage.setItem("sawOpening", "true");
+  };
+
+  const [present] = useIonToast();
+
+  const presentToast = (message: string, color?: string) => {
+    present({
+      message,
+      duration: 2000,
+      position: "top",
+      positionAnchor: "page-header",
+      color,
+    });
   };
 
   // page state for tracking all products in the inventory
@@ -81,7 +95,7 @@ const InventoryPage: React.FC = () => {
   // render the inventory page UI
   return (
     <IonPage id="home-page">
-      <IonHeader>
+      <IonHeader id="page-header">
         <IonToolbar>
           <IonTitle>Current Inventory</IonTitle>
         </IonToolbar>
@@ -149,7 +163,7 @@ const InventoryPage: React.FC = () => {
                     product: p,
                     txType: "sell",
                   });
-                  console.log("Clicked sell stock for " + p.name);
+                  console.log("Clicked sell item for " + p.name);
                 }}
               />
             ))}
@@ -168,10 +182,22 @@ const InventoryPage: React.FC = () => {
             txType={prodToChange.txType}
             product={prodToChange.product}
             onConfirmChangeStock={(id, stock) => {
-              prodToChange.txType === "buy"
-                ? inventoryContext.buyProductStock(id, stock)
-                : inventoryContext.sellProductStock(id, stock);
-              setProdToChange(undefined);
+              const p = prodToChange.product;
+              try {
+                if (prodToChange.txType === "buy") {
+                  inventoryContext.buyProductStock(id, stock);
+                  presentToast(
+                    `Restocked ${stock} items of ${p.name}`,
+                    "warning"
+                  );
+                } else {
+                  inventoryContext.sellProductStock(id, stock);
+                  presentToast(`Sold ${stock} items of ${p.name}`, "success");
+                }
+                setProdToChange(undefined);
+              } catch (e) {
+                presentToast(`Error! ${e}`, "error");
+              }
             }}
           />
         )}
@@ -186,13 +212,21 @@ const InventoryPage: React.FC = () => {
             stock: number,
             description: string
           ) => {
-            inventoryContext.addNewProduct(
-              name,
-              price,
-              cost,
-              stock,
-              description
-            );
+            try {
+              inventoryContext.addNewProduct(
+                name,
+                price,
+                cost,
+                stock,
+                description
+              );
+              presentToast(
+                `Successfully added a new product "${name}"`,
+                "success"
+              );
+            } catch (e) {
+              presentToast(`Error! ${e}`, "error");
+            }
           }}
         />
         <IonAlert

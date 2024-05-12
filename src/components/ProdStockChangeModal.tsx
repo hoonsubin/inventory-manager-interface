@@ -128,7 +128,7 @@ const ProdStockChangeModal: React.FC<ProdStockChangeModalProps> = ({
           onClick={handleChangeStock}
           disabled={!isValidInput}
         >
-          {txType === "sell" ? "Sell Stock" :  "Restock Product"}
+          {txType === "sell" ? "Sell Item" :  "Restock Product"}
         </IonButton>
         <IonButton expand="block" color="medium" onClick={onClose}>
           Cancel

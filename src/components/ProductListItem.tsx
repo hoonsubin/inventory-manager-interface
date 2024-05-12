@@ -79,7 +79,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
           disabled={product.stock < 1}
           onClick={() => onClickSell(product)}
         >
-          Sell Stock -
+          Sell Item -
         </IonButton>
         <IonButton fill="clear" onClick={onClickDetails}>
           Details
