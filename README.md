@@ -37,6 +37,14 @@ So far, the application was tested on Windows and macOS (Apple Silicon).
 
 ```bash
 .
+├── .browserslistrc
+├── .eslintrc.js
+├── .github
+│   └── workflows
+│       └── deploy_action.yml
+├── .gitignore
+├── .vscode
+│   └── extensions.json
 ├── README.md
 ├── capacitor.config.ts
 ├── cypress
@@ -68,7 +76,8 @@ So far, the application was tested on Windows and macOS (Apple Silicon).
 │   │   ├── ExploreContainer.css
 │   │   ├── ExploreContainer.tsx
 │   │   ├── ProdStockChangeModal.tsx
-│   │   └── ProductListItem.tsx
+│   │   ├── ProductListItem.tsx
+│   │   └── TransactionListItem.tsx
 │   ├── context
 │   │   └── InventoryContext.tsx
 │   ├── data
@@ -79,7 +88,6 @@ So far, the application was tested on Windows and macOS (Apple Silicon).
 │   ├── pages
 │   │   ├── HistoryPage.css
 │   │   ├── HistoryPage.tsx
-│   │   ├── InventoryPage.css
 │   │   ├── InventoryPage.tsx
 │   │   ├── ViewProduct.css
 │   │   └── ViewProduct.tsx

@@ -24,7 +24,6 @@ import {
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { InventoryContext } from "../context/InventoryContext";
-import "./InventoryPage.css";
 
 /**
  * The main inventory page that first-time users will see when they open the app.
