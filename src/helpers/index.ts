@@ -1,6 +1,7 @@
 import { Product, Transaction, TxType } from "../types";
 import { getDefaultProducts } from "../data/products";
 import { arrowDown, bagRemove, bagAdd } from "ionicons/icons";
+import moment from "moment";
 
 /**
  * Inventory identifier that is used to save and read the product inventory JSON data in the browser.
@@ -85,4 +86,14 @@ export const typeToVisuals = (txType: TxType) => {
         color: "success",
       };
   }
+};
+
+/**
+ * A helper function that takes in a date object and converts it into human-readable relative string.
+ * For example, `Two days ago` or `3 minutes ago`.
+ * @param date The date object to format
+ * @returns Formatted relative time string
+ */
+export const dateToRelativeFormat = (date: Date) => {
+  return moment(date).fromNow();
 };

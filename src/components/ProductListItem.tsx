@@ -8,8 +8,10 @@ import {
   IonCol,
 } from "@ionic/react";
 import { useHistory } from "react-router-dom";
-import React from "react";
+import React, { useMemo, useContext } from "react";
 import { Product } from "../types";
+import { InventoryContext } from "../context/InventoryContext";
+import { dateToRelativeFormat } from "../helpers";
 
 /**
  * The properties for the product list item that the dev must provide
@@ -35,6 +37,20 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
   // because we reroute the user to the product detail page, we need to use the browser history
   const history = useHistory();
 
+  // consume the inventory logic context that was defined in `src/context/InventoryContext.tsx`
+  const inventoryContext = useContext(InventoryContext);
+
+  // throw an error if the inventory logic could not load
+  // in most cases, this should never happen, but in TypeScript, we can't reasonably make that assumption
+  if (!inventoryContext) {
+    throw new Error(
+      "Inventory context failed to load. The application cannot work."
+    );
+  }
+  const lastTx = useMemo(() => {
+    return inventoryContext.getLastTxOfProd(product.id);
+  }, [inventoryContext.getLastTxOfProd]);
+
   // defines the behavior when the user clicks the product detail button
   const onClickDetails = () => {
     // we push the browser history to the following URL with the product ID
@@ -48,8 +64,10 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
       <IonCard>
         <IonCardHeader>
           <IonCardTitle>{product.name}</IonCardTitle>
-          <IonCardSubtitle>
-            Last Transaction: {new Date().toDateString()}
+          <IonCardSubtitle color="primary">
+            {lastTx
+              ? `Last Transaction: ${dateToRelativeFormat(lastTx.time)}`
+              : `No Transactions`}
           </IonCardSubtitle>
         </IonCardHeader>
 

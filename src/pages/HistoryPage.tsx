@@ -21,7 +21,7 @@ import { Transaction } from "../types";
 import { InventoryContext } from "../context/InventoryContext";
 import ExploreContainer from "../components/ExploreContainer";
 import _ from "lodash";
-import { typeToVisuals } from "../helpers";
+import { typeToVisuals, dateToRelativeFormat } from "../helpers";
 
 import "./HistoryPage.css";
 
@@ -134,7 +134,7 @@ const HistoryPage: React.FC = () => {
                       </IonText>
                     </IonLabel>
                     <div className="metadata-end-wrapper" slot="end">
-                      <IonNote color="medium">{i.time.toString()}</IonNote>
+                      <IonNote color="medium">{dateToRelativeFormat(i.time)}</IonNote>
                     </div>
                   </IonItem>
                 );
