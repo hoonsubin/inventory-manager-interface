@@ -19,6 +19,7 @@ import {
   IonCardHeader,
   IonCardSubtitle,
   IonCardContent,
+  IonAlert,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { InventoryContext } from "../context/InventoryContext";
@@ -32,6 +33,21 @@ import "./InventoryPage.css";
 const InventoryPage: React.FC = () => {
   // consume the inventory logic context that was defined in `src/context/InventoryContext.tsx`
   const inventoryContext = useContext(InventoryContext);
+
+  /**
+   * Show the opening welcome instruction if it's the first time visiting
+   */ 
+  const showOpening = !localStorage.getItem("sawOpening");
+  /**
+   * The welcome message and first-time use instructions
+   */
+  const welcomeMsg = "Welcome to the inventory management app!\nTry adding a new product by clicking the plus button on the bottom right corner!";
+  /**
+   * Handle the welcome message dismiss behavior
+   */
+  const handleOnDismissWelcome = () => {
+    localStorage.setItem("sawOpening", "true");
+  };
 
   // page state for tracking all products in the inventory
   const [products, setProducts] = useState<Product[]>([]);
@@ -71,7 +87,6 @@ const InventoryPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Current Inventory</IonTitle>
@@ -179,6 +194,13 @@ const InventoryPage: React.FC = () => {
               description
             );
           }}
+        />
+        <IonAlert
+          header="Welcome Dear User"
+          message={welcomeMsg}
+          buttons={["Dismiss"]}
+          isOpen={showOpening}
+          onDidDismiss={handleOnDismissWelcome}
         />
       </IonContent>
     </IonPage>
