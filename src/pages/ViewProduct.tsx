@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { InventoryContext } from "../context/InventoryContext";
 import { Product, UUID, Transaction } from "../types";
-import { typeToVisuals } from "../helpers";
 import {
   IonBackButton,
   IonButtons,
@@ -13,7 +12,6 @@ import {
   IonList,
   IonNote,
   IonPage,
-  IonText,
   IonToolbar,
 } from "@ionic/react";
 import { bag } from "ionicons/icons";

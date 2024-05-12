@@ -1,15 +1,10 @@
 import {
   IonContent,
   IonHeader,
-  IonItem,
-  IonLabel,
   IonList,
   IonPage,
   IonTitle,
   IonToolbar,
-  IonIcon,
-  IonText,
-  IonNote,
   IonCard,
   IonCardHeader,
   IonCardTitle,
@@ -21,7 +16,6 @@ import { Transaction } from "../types";
 import { InventoryContext } from "../context/InventoryContext";
 import ExploreContainer from "../components/ExploreContainer";
 import _ from "lodash";
-import { typeToVisuals, dateToRelativeFormat } from "../helpers";
 import TransactionListItem from "../components/TransactionListItem";
 
 import "./HistoryPage.css";
