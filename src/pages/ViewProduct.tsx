@@ -20,6 +20,7 @@ import { bag } from "ionicons/icons";
 import { useParams } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
 import _ from "lodash";
+import TransactionListItem from "../components/TransactionListItem";
 import "./ViewProduct.css";
 
 /**
@@ -34,7 +35,7 @@ const ViewProduct: React.FC = () => {
   const [product, setProduct] = useState<Product>();
   // page state for tracking the transaction history for the current product that the user is viewing
   const [prodHistory, setProdHistory] = useState<Transaction[]>([]);
-  
+
   // throw an error if the inventory logic could not load
   // in most cases, this should never happen, but in TypeScript, we can't reasonably make that assumption
   if (!inventoryContext) {
@@ -125,42 +126,7 @@ const ViewProduct: React.FC = () => {
                 <>
                   <IonList inset={true}>
                     {_.map(prodHistory, (i) => {
-                      return (
-                        <IonItem key={i.id} detail={false}>
-                          <IonIcon
-                            aria-hidden="true"
-                            icon={typeToVisuals(i.type).icon}
-                            slot="start"
-                            color={typeToVisuals(i.type).color}
-                          ></IonIcon>
-                          <IonLabel>
-                            <strong>
-                              {inventoryContext.findProdById(i.productId).name}
-                            </strong>
-                            <IonText>
-                              <p>
-                                Transaction Type: {typeToVisuals(i.type).msg}
-                              </p>
-                              <p>Quantity: {i.quantity}</p>
-                              <p>
-                                {i.type === "add" || i.type === "buy"
-                                  ? "Total Cost:"
-                                  : "Total Gains:"}{" "}
-                                {i.totalCost.toLocaleString(undefined, {
-                                  minimumFractionDigits: 2,
-                                })}{" "}
-                                EUR
-                              </p>
-                              <p>Transaction ID: {i.id}</p>
-                            </IonText>
-                          </IonLabel>
-                          <div className="metadata-end-wrapper" slot="end">
-                            <IonNote color="medium">
-                              {i.time.toString()}
-                            </IonNote>
-                          </div>
-                        </IonItem>
-                      );
+                      return <TransactionListItem key={i.id} transaction={i} />;
                     })}
                   </IonList>
                 </>

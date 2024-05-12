@@ -22,6 +22,7 @@ import { InventoryContext } from "../context/InventoryContext";
 import ExploreContainer from "../components/ExploreContainer";
 import _ from "lodash";
 import { typeToVisuals, dateToRelativeFormat } from "../helpers";
+import TransactionListItem from "../components/TransactionListItem";
 
 import "./HistoryPage.css";
 
@@ -106,38 +107,7 @@ const HistoryPage: React.FC = () => {
           <>
             <IonList inset={true}>
               {_.map(txHistory, (i) => {
-                return (
-                  <IonItem key={i.id} detail={false}>
-                    <IonIcon
-                      aria-hidden="true"
-                      icon={typeToVisuals(i.type).icon}
-                      slot="start"
-                      color={typeToVisuals(i.type).color}
-                    ></IonIcon>
-                    <IonLabel>
-                      <strong>
-                        {inventoryContext.findProdById(i.productId).name}
-                      </strong>
-                      <IonText>
-                        <p>Transaction Type: {typeToVisuals(i.type).msg}</p>
-                        <p>Quantity: {i.quantity}</p>
-                        <p>
-                          {i.type === "add" || i.type === "buy"
-                            ? "Total Cost:"
-                            : "Total Gains:"}{" "}
-                          {i.totalCost.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                          })}{" "}
-                          EUR
-                        </p>
-                        <p>Transaction ID: {i.id}</p>
-                      </IonText>
-                    </IonLabel>
-                    <div className="metadata-end-wrapper" slot="end">
-                      <IonNote color="medium">{dateToRelativeFormat(i.time)}</IonNote>
-                    </div>
-                  </IonItem>
-                );
+                return <TransactionListItem key={i.id} transaction={i} />;
               })}
             </IonList>
           </>
