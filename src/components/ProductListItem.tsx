@@ -11,7 +11,7 @@ import { useHistory } from "react-router-dom";
 import React, { useMemo, useContext } from "react";
 import { Product } from "../types";
 import { InventoryContext } from "../context/InventoryContext";
-import { dateToRelativeFormat } from "../helpers";
+import { dateToRelativeFormat, formatNumToEur } from "../helpers";
 
 /**
  * The properties for the product list item that the dev must provide
@@ -51,6 +51,9 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
     return inventoryContext.getLastTxOfProd(product.id);
   }, [inventoryContext.getLastTxOfProd]);
 
+  const totalValue = () => {
+    return product.price * product.stock;
+  };
   // defines the behavior when the user clicks the product detail button
   const onClickDetails = () => {
     // we push the browser history to the following URL with the product ID
@@ -72,21 +75,10 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
         </IonCardHeader>
 
         <IonCardContent>
-          <p>
-            Retail Price:{" "}
-            {product.price.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-            })}{" "}
-            EUR
-          </p>
-          <p>
-            Product Cost:{" "}
-            {product.cost.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-            })}{" "}
-            EUR
-          </p>
+          <p>Retail Price: {formatNumToEur(product.price)}</p>
+          <p>Product Cost: {formatNumToEur(product.cost)}</p>
           <p>Current Stock: {product.stock}</p>
+          <p>Total Value: {formatNumToEur(totalValue())}</p>
         </IonCardContent>
 
         <IonButton fill="clear" onClick={() => onClickRestock(product)}>

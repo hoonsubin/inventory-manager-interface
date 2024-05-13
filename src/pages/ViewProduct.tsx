@@ -19,6 +19,7 @@ import { useParams } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
 import _ from "lodash";
 import TransactionListItem from "../components/TransactionListItem";
+import { formatNumToEur } from "../helpers";
 import "./ViewProduct.css";
 
 /**
@@ -88,22 +89,10 @@ const ViewProduct: React.FC = () => {
                   </span>
                 </h2>
                 <h3>
-                  Price:{" "}
-                  <IonNote>
-                    {product.price.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                    })}{" "}
-                    EUR
-                  </IonNote>
+                  Price: <IonNote>{formatNumToEur(product.price)}</IonNote>
                 </h3>
                 <h3>
-                  Cost:{" "}
-                  <IonNote>
-                    {product.cost.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                    })}{" "}
-                    EUR
-                  </IonNote>
+                  Cost: <IonNote>{formatNumToEur(product.cost)}</IonNote>
                 </h3>
                 <h3>
                   Product ID: <IonNote>{product.id}</IonNote>

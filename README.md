@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a simple inventory management application that allows the user to manage all inventory and stock of multiple products and track all transactions.
+This is a simple inventory management application that allows the user to manage all inventory and stock of multiple products and track all transactions that was made as part of the [Master’s in Management and Digital Technologies' application for winter semester 2024/25](https://cms-cdn.lmu.de/media/04-som/mmt/downloads/ws2425_essay-for-mmt-application.pdf) at the LMU.
 This project is written using Ionic and Electron with React, TypeScript.
 
 ## Environment Setup

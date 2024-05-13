@@ -1,6 +1,7 @@
 import ProductListItem from "../components/ProductListItem";
 import AddProductModal from "../components/AddNewProdModal";
 import ProdStockChangeModal from "../components/ProdStockChangeModal";
+import UserInstructionCard from "../components/UserInstructionCard";
 import React, { useState, useContext, useEffect } from "react";
 import { Product } from "../types";
 import {
@@ -14,13 +15,18 @@ import {
   IonFabButton,
   IonGrid,
   IonRow,
-  IonCard,
-  IonCardTitle,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardContent,
   IonAlert,
   useIonToast,
+  IonSelect,
+  IonSelectOption,
+  IonItem,
+  IonLabel,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonCardContent,
+  IonList,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { InventoryContext } from "../context/InventoryContext";
@@ -33,6 +39,14 @@ import { InventoryContext } from "../context/InventoryContext";
 const InventoryPage: React.FC = () => {
   // consume the inventory logic context that was defined in `src/context/InventoryContext.tsx`
   const inventoryContext = useContext(InventoryContext);
+
+  // throw an error if the inventory logic could not load
+  // in most cases, this should never happen, but in TypeScript, we can't reasonably make that assumption
+  if (!inventoryContext) {
+    throw new Error(
+      "Inventory context failed to load. The application cannot work."
+    );
+  }
 
   /**
    * Show the opening welcome instruction if it's the first time visiting
@@ -50,14 +64,21 @@ const InventoryPage: React.FC = () => {
     localStorage.setItem("sawOpening", "true");
   };
 
+  // a function that is part of the toast component. We need this to define how the toast will look like
   const [present] = useIonToast();
 
+  /**
+   * Renders a toast message with the given message text and the color.
+   * @param message The message to be displayed
+   * @param color The color of the toast message (default is primary)
+   */
   const presentToast = (message: string, color?: string) => {
+    // we use the `present` function we got from the previous block
     present({
       message,
-      duration: 2000,
-      position: "top",
-      positionAnchor: "page-header",
+      duration: 2000, // display for two seconds
+      position: "top", // display the message on top of the page
+      positionAnchor: "page-header", // make sure it doesn't go above the header component
       color,
     });
   };
@@ -74,13 +95,8 @@ const InventoryPage: React.FC = () => {
     txType: "sell" | "buy";
   }>();
 
-  // throw an error if the inventory logic could not load
-  // in most cases, this should never happen, but in TypeScript, we can't reasonably make that assumption
-  if (!inventoryContext) {
-    throw new Error(
-      "Inventory context failed to load. The application cannot work."
-    );
-  }
+  // since the exercise explicitly mentions that "Also the inventory value should be able to be displayed for specific product IDs," we add track the state
+  const [selectedProd, setSelectedProd] = useState<Product | "all">("all");
 
   // hook for updating the product list
   useEffect(() => {
@@ -107,65 +123,75 @@ const InventoryPage: React.FC = () => {
         </IonHeader>
 
         <IonGrid>
-          <IonCard>
-            <IonCardHeader>
-              <IonCardTitle>Inventory Value</IonCardTitle>
-              <IonCardSubtitle color="primary">
-                {inventoryContext.totalValue.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}{" "}
-                EUR
-              </IonCardSubtitle>
-            </IonCardHeader>
-
-            <IonCardContent>
-              <p>
-                Total Revenue:{" "}
-                {inventoryContext.totalRevenue.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}{" "}
-                EUR
-              </p>
-              <p>
-                Total Costs:{" "}
-                {inventoryContext.totalCosts.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}{" "}
-                EUR
-              </p>
-
-              <p>
-                Current Profit:{" "}
-                {inventoryContext.totalProfit.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}{" "}
-                EUR
-              </p>
-            </IonCardContent>
-          </IonCard>
+          <UserInstructionCard />
+          <IonItem>
+            <IonSelect
+              label="Select a product ID"
+              labelPlacement="floating"
+              value={selectedProd}
+              onIonChange={(e) => {
+                const selected = e.detail.value;
+                setSelectedProd(selected);
+                console.log(`User selected ${e.detail.value}`);
+              }}
+            >
+              <IonSelectOption value="all">All products</IonSelectOption>
+              {products.map((i) => {
+                return (
+                  <IonSelectOption key={i.id} value={i}>
+                    <IonLabel>
+                      {i.id} - {i.name}
+                    </IonLabel>
+                  </IonSelectOption>
+                );
+              })}
+            </IonSelect>
+          </IonItem>
           <IonRow>
-            {products.map((p) => (
+            {selectedProd === "all" || !selectedProd ? (
+              products.map((p) => (
+                <ProductListItem
+                  key={p.id}
+                  product={p}
+                  onClickRestock={() => {
+                    setShowStockChangeModal(true);
+                    setProdToChange({
+                      product: p,
+                      txType: "buy",
+                    });
+                    console.log("Clicked restock for " + p.name);
+                  }}
+                  onClickSell={() => {
+                    setShowStockChangeModal(true);
+                    setProdToChange({
+                      product: p,
+                      txType: "sell",
+                    });
+                    console.log("Clicked sell item for " + p.name);
+                  }}
+                />
+              ))
+            ) : (
               <ProductListItem
-                key={p.id}
-                product={p}
+                product={selectedProd}
                 onClickRestock={() => {
                   setShowStockChangeModal(true);
                   setProdToChange({
-                    product: p,
+                    product: selectedProd,
                     txType: "buy",
                   });
-                  console.log("Clicked restock for " + p.name);
+                  console.log("Clicked restock for " + selectedProd.name);
                 }}
                 onClickSell={() => {
                   setShowStockChangeModal(true);
                   setProdToChange({
-                    product: p,
+                    product: selectedProd,
                     txType: "sell",
                   });
-                  console.log("Clicked sell item for " + p.name);
+                  console.log("Clicked sell item for " + selectedProd.name);
                 }}
               />
-            ))}
+            )}
           </IonRow>
         </IonGrid>
 

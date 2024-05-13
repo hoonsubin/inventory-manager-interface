@@ -8,6 +8,7 @@ import {
   IonLabel,
 } from "@ionic/react";
 import { Product, UUID } from "../types";
+import { formatNumToEur } from "../helpers";
 
 /**
  * The component property for the product stock change modal.
@@ -44,7 +45,6 @@ const ProdStockChangeModal: React.FC<ProdStockChangeModalProps> = ({
   // note that in `src/components/AddNewProdModal.tsx`, we used a component state and hooks to track the input state, while here, we are using `useMemo`
   // they are exactly the same in function, but since this modal requires less inputs, we try to keep it short and simple
   const isValidInput = useMemo(() => {
-
     // if the user is trying to sell more items than they have, we return false
     if (txType === "sell" && stockChange > product.stock) {
       return false;
@@ -97,28 +97,18 @@ const ProdStockChangeModal: React.FC<ProdStockChangeModalProps> = ({
           <IonLabel>
             <h2>
               {txType === "sell"
-                ? `Price is ${product.price.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                  })} EUR per unit`
-                : `Cost is ${product.cost.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                  })} EUR per unit`}
+                ? `Price is ${formatNumToEur(product.price)} per unit`
+                : `Cost is ${formatNumToEur(product.cost)} per unit`}
             </h2>
             {isValidInput && (
               <p>
                 {txType === "sell"
-                  ? `You get ${(product.price * stockChange).toLocaleString(
-                      undefined,
-                      {
-                        minimumFractionDigits: 2,
-                      }
-                    )} EUR in total`
-                  : `You spend ${(product.cost * stockChange).toLocaleString(
-                      undefined,
-                      {
-                        minimumFractionDigits: 2,
-                      }
-                    )} EUR in total`}
+                  ? `You get ${formatNumToEur(
+                      product.price * stockChange
+                    )} in total`
+                  : `You spend ${formatNumToEur(
+                      product.cost * stockChange
+                    )} in total`}
               </p>
             )}
           </IonLabel>
@@ -128,7 +118,7 @@ const ProdStockChangeModal: React.FC<ProdStockChangeModalProps> = ({
           onClick={handleChangeStock}
           disabled={!isValidInput}
         >
-          {txType === "sell" ? "Sell Item" :  "Restock Product"}
+          {txType === "sell" ? "Sell Item" : "Restock Product"}
         </IonButton>
         <IonButton expand="block" color="medium" onClick={onClose}>
           Cancel

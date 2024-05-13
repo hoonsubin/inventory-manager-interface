@@ -58,6 +58,8 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
 
   // component state for tracking the list of all transactions that occurs for every interaction
   // same as above, we load from the locally saved data by default
+  // note that while the product have a default list, the transaction will start from zero as according to the exercise:
+  // "Revenue & costs start with a value of 0 and are updated with every transaction."
   const [transactionHistory, setTransactionHistory] = useState<Transaction[]>(
     helpers.loadTxData()
   );
@@ -135,6 +137,7 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
 
   /**
    * A private function that submits new transactions.
+   * According to the exercise, "Adding products, restocking products, and selling products are considered transactions."
    * It takes the transaction data type as the argument and adds them to the current transaction list.
    * This function returns nothing.
    */
@@ -198,6 +201,7 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
       const totalCost = cost * initStock;
 
       // submit the new transaction with the provided data
+      // "Costs do occur whenever a transaction (add product, reorder product) is processed."
       _newTransaction({
         id: crypto.randomUUID(), // randomly generate a new transaction ID
         type: "add", // the tx type will be `add`
@@ -244,6 +248,7 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
         throw new Error("New product stock cannot be below 1");
       }
       // get the product object with the ID
+      // "Costs do occur whenever a transaction (add product, reorder product) is processed."
       const selectedProduct = findProdById(productId);
       // create a new transaction event
       _newTransaction({
@@ -285,6 +290,7 @@ export const InventoryProvider: React.FC<InventoryProviderType> = ({
       }
 
       // submit a new transaction
+      // "Revenue is generated whenever a product is sold."
       _newTransaction({
         id: crypto.randomUUID(),
         productId: selectedProduct.id,
