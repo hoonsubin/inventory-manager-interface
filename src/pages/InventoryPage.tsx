@@ -1,7 +1,7 @@
 import ProductListItem from "../components/ProductListItem";
 import AddProductModal from "../components/AddNewProdModal";
-import InventoryValueCard from "../components/InventoryValueCard";
 import ProdStockChangeModal from "../components/ProdStockChangeModal";
+import UserInstructionCard from "../components/UserInstructionCard";
 import React, { useState, useContext, useEffect } from "react";
 import { Product } from "../types";
 import {
@@ -21,6 +21,12 @@ import {
   IonSelectOption,
   IonItem,
   IonLabel,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonCardContent,
+  IonList,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { InventoryContext } from "../context/InventoryContext";
@@ -117,12 +123,15 @@ const InventoryPage: React.FC = () => {
         </IonHeader>
 
         <IonGrid>
-          <InventoryValueCard
-            totalCosts={inventoryContext.totalCosts}
-            totalProfit={inventoryContext.totalProfit}
-            totalRevenue={inventoryContext.totalRevenue}
-            totalValue={inventoryContext.totalValue}
-            displayType="value"
+          <UserInstructionCard
+            inventoryCalcs={{
+              totalCost: inventoryContext.totalCosts,
+              totalProf: inventoryContext.totalProfit,
+              totalRev: inventoryContext.totalRevenue,
+              totalVal: inventoryContext.totalValue,
+            }}
+            products={inventoryContext.products}
+            transactions={inventoryContext.transactionHistory}
           />
           <IonItem>
             <IonSelect
