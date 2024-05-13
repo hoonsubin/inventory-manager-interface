@@ -97,3 +97,14 @@ export const typeToVisuals = (txType: TxType) => {
 export const dateToRelativeFormat = (date: Date) => {
   return moment(date).fromNow();
 };
+
+/**
+ * A helper function for formatting numbers into the EUR currency.
+ * @param val the raw number value to be formatted
+ * @returns a number string with a divider and suffixed with "EUR"
+ */
+export const formatNumToEur = (val: number) => {
+  return val.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+  }) + " EUR";
+};

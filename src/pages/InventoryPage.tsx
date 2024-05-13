@@ -40,6 +40,14 @@ const InventoryPage: React.FC = () => {
   // consume the inventory logic context that was defined in `src/context/InventoryContext.tsx`
   const inventoryContext = useContext(InventoryContext);
 
+  // throw an error if the inventory logic could not load
+  // in most cases, this should never happen, but in TypeScript, we can't reasonably make that assumption
+  if (!inventoryContext) {
+    throw new Error(
+      "Inventory context failed to load. The application cannot work."
+    );
+  }
+
   /**
    * Show the opening welcome instruction if it's the first time visiting
    */
@@ -90,14 +98,6 @@ const InventoryPage: React.FC = () => {
   // since the exercise explicitly mentions that "Also the inventory value should be able to be displayed for specific product IDs," we add track the state
   const [selectedProd, setSelectedProd] = useState<Product | "all">("all");
 
-  // throw an error if the inventory logic could not load
-  // in most cases, this should never happen, but in TypeScript, we can't reasonably make that assumption
-  if (!inventoryContext) {
-    throw new Error(
-      "Inventory context failed to load. The application cannot work."
-    );
-  }
-
   // hook for updating the product list
   useEffect(() => {
     // get the full product list from the inventory manager and assign it into another reference
@@ -123,16 +123,7 @@ const InventoryPage: React.FC = () => {
         </IonHeader>
 
         <IonGrid>
-          <UserInstructionCard
-            inventoryCalcs={{
-              totalCost: inventoryContext.totalCosts,
-              totalProf: inventoryContext.totalProfit,
-              totalRev: inventoryContext.totalRevenue,
-              totalVal: inventoryContext.totalValue,
-            }}
-            products={inventoryContext.products}
-            transactions={inventoryContext.transactionHistory}
-          />
+          <UserInstructionCard />
           <IonItem>
             <IonSelect
               label="Select a product ID"

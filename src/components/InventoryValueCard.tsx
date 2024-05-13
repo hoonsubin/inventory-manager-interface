@@ -7,6 +7,7 @@ import {
 } from "@ionic/react";
 import React from "react";
 import _ from "lodash";
+import { formatNumToEur } from "../helpers";
 
 /**
  * Properties for the inventory value card component
@@ -46,10 +47,7 @@ const InventoryValueCard: React.FC<InventoryValueCardProps> = (props) => {
           <IonCardHeader>
             <IonCardTitle>Inventory Value</IonCardTitle>
             <IonCardSubtitle color="primary">
-              {props.totalValue.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-              })}{" "}
-              EUR
+              {formatNumToEur(props.totalValue)}
             </IonCardSubtitle>
           </IonCardHeader>
         );
@@ -58,10 +56,7 @@ const InventoryValueCard: React.FC<InventoryValueCardProps> = (props) => {
           <IonCardHeader>
             <IonCardTitle>Total Cost</IonCardTitle>
             <IonCardSubtitle color="primary">
-              {props.totalCosts.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-              })}{" "}
-              EUR
+              {formatNumToEur(props.totalCosts)}
             </IonCardSubtitle>
           </IonCardHeader>
         );
@@ -70,10 +65,7 @@ const InventoryValueCard: React.FC<InventoryValueCardProps> = (props) => {
           <IonCardHeader>
             <IonCardTitle>Total Profit</IonCardTitle>
             <IonCardSubtitle color="primary">
-              {props.totalProfit.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-              })}{" "}
-              EUR
+              {formatNumToEur(props.totalProfit)}
             </IonCardSubtitle>
           </IonCardHeader>
         );
@@ -82,10 +74,7 @@ const InventoryValueCard: React.FC<InventoryValueCardProps> = (props) => {
           <IonCardHeader>
             <IonCardTitle>Total Revenue</IonCardTitle>
             <IonCardSubtitle color="primary">
-              {props.totalRevenue.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-              })}{" "}
-              EUR
+              {formatNumToEur(props.totalRevenue)}
             </IonCardSubtitle>
           </IonCardHeader>
         );
@@ -97,28 +86,10 @@ const InventoryValueCard: React.FC<InventoryValueCardProps> = (props) => {
     <IonCard>
       <CalcHeaderRenderer />
       <IonCardContent>
-        <p>
-          Total Revenue:{" "}
-          {props.totalRevenue.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-          })}{" "}
-          EUR
-        </p>
-        <p>
-          Total Costs:{" "}
-          {props.totalCosts.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-          })}{" "}
-          EUR
-        </p>
+        <p>Total Revenue: {formatNumToEur(props.totalRevenue)}</p>
+        <p>Total Costs: {formatNumToEur(props.totalCosts)}</p>
 
-        <p>
-          Current Profit:{" "}
-          {props.totalProfit.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-          })}{" "}
-          EUR
-        </p>
+        <p>Current Profit: {formatNumToEur(props.totalProfit)}</p>
       </IonCardContent>
     </IonCard>
   );

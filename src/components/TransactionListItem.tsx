@@ -3,7 +3,11 @@ import React, { useContext } from "react";
 import { Transaction } from "../types";
 import { InventoryContext } from "../context/InventoryContext";
 import _ from "lodash";
-import { typeToVisuals, dateToRelativeFormat } from "../helpers";
+import {
+  typeToVisuals,
+  dateToRelativeFormat,
+  formatNumToEur,
+} from "../helpers";
 
 /**
  * The prop definition for the TransactionListItem component
@@ -50,10 +54,7 @@ const TransactionListItem: React.FC<TransactionListItemProps> = ({
             {transaction.type === "add" || transaction.type === "buy"
               ? "Total Cost:"
               : "Total Gains:"}{" "}
-            {transaction.totalCost.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-            })}{" "}
-            EUR
+            {formatNumToEur(transaction.totalCost)}
           </p>
           <p>Transaction ID: {transaction.id}</p>
         </IonText>
