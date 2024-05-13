@@ -75,9 +75,11 @@ So far, the application was tested on Windows and macOS (Apple Silicon).
 │   │   ├── AddNewProdModal.tsx
 │   │   ├── ExploreContainer.css
 │   │   ├── ExploreContainer.tsx
+│   │   ├── InventoryValueCard.tsx
 │   │   ├── ProdStockChangeModal.tsx
 │   │   ├── ProductListItem.tsx
-│   │   └── TransactionListItem.tsx
+│   │   ├── TransactionListItem.tsx
+│   │   └── UserInstructionCard.tsx
 │   ├── context
 │   │   └── InventoryContext.tsx
 │   ├── data
