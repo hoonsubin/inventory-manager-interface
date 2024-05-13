@@ -155,7 +155,7 @@ const UserInstructionCard: React.FC = () => {
       <IonCardHeader>
         <IonCardTitle>Your "AI" Assistant</IonCardTitle>
         <IonCardSubtitle>
-          Let me help you what you should do next!
+          Let me help you with what you should do next!
         </IonCardSubtitle>
       </IonCardHeader>
       <IonCardContent>
