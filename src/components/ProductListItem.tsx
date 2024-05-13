@@ -51,6 +51,9 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
     return inventoryContext.getLastTxOfProd(product.id);
   }, [inventoryContext.getLastTxOfProd]);
 
+  const totalValue = () => {
+    return product.price * product.stock;
+  };
   // defines the behavior when the user clicks the product detail button
   const onClickDetails = () => {
     // we push the browser history to the following URL with the product ID
@@ -87,6 +90,13 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
             EUR
           </p>
           <p>Current Stock: {product.stock}</p>
+          <p>
+            Total Value:{" "}
+            {totalValue().toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}{" "}
+            EUR
+          </p>
         </IonCardContent>
 
         <IonButton fill="clear" onClick={() => onClickRestock(product)}>
